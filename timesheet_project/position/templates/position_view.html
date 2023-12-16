@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block page_title %}
+<i class="bi bi-people"></i> Title
+{% endblock %}
+
+{% block content %}
+
+<div class="position-relative" style="width:100%">
+    <table class="table align-middle table-hover" id="doi">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Title</th>
+                <th scope="col">Department</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in position %}
+            <tr>
+                <td>{{row.id|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.title|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.department|default_if_none:"&nbsp;"}}</td>
+                <td>                    
+                    <a class="btn btn-success col-12 btn-sm" href="{% url 'position_edit' row.id %}"><button type="button" class="btn btn-success btn-block"><i class="bi bi-pencil"></i></button></a>
+                </td>
+                <td>
+                    <a class="btn btn-danger col-12 btn-sm" href="{% url 'position_edit' row.id %}"><button type="button" class="btn btn-danger btn-block"><i class="bi bi-trash3"></i></button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+ 
+ <div class="mb-2">
+    <div class="d-flex flex-row">
+       {% comment %} <div class="p-2"><a class='btn btn-primary' href="{% url 'patients_export' %}" onclick="listCheckBoxes()"> Export CSV</a></div> {% endcomment %}
+       {% comment %} {% if perms.patients.add_patient %}
+       {% endif %} {% endcomment %}
+       <div class="p-2"><a class='btn btn-success' href="{% url 'position_create' %}"> Add Title </a></div>
+    </div>
+ </div>
+ 
+ <style>
+    div.fixed {
+       left: 200px;
+       position: fixed;
+       width: 50%;
+       bottom: 10px;
+     } 
+ 
+ </style>
+ 
+ <script>
+ 
+     function listCheckBoxes(){
+         var checkedBoxes = document.querySelectorAll('input[name=mycheckboxes]:checked');
+         console.log(checkedBoxes)
+     }
+ 
+ </script>
+{% endblock %}

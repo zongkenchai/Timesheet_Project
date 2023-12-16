@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block page_title %}
+<i class="bi bi-people"></i> Employee
+{% endblock %}
+
+{% block content %}
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Advanced Search
+  </button>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Advanced Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form  method="get">
+           {% csrf_token %}
+           {% for field in filter.form %}
+           <div class="row">
+              <div class="col-md-4">
+                 {{ field.label_tag }}
+                 {% if field.help_text %}
+                 <sup>{{ field.help_text }}</sup>
+                 {% endif %}
+                 {% for error in field.errors %}
+                 <div class="row">
+                    <div class="alert alert-danger">{{error}}</div>
+                 </div>
+                 {% endfor %}
+              </div>
+              <div class="col-md-8 mb-4 pull-left">
+                 {% if field.field.widget.input_type == "text" %}
+                 {% render_field field class+="form-control" %}
+                 {% elif field.field.widget.input_type == "select" %}
+                 {% render_field field class+="form-select" %}
+                 {% elif field.field.widget.input_type == "date" %}
+                 {% render_field field class+="datepicker" %}
+                 {% elif field.field.widget.input_type == "checkbox" %}
+                 {% render_field field class+="form-check" %}
+                 {% else %}
+                 {{field}}
+                 {% endif %}
+              </div>
+           </div>
+           {% endfor %}
+        </div>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <a class='btn btn-primary' href='{% url 'employee_list' %}'>Reset Filter</a>
+              <button type="submit" class="btn btn-success">Search</button>
+           </div>
+         </form>
+      </div>
+
+    </div>
+  </div>
+</div> 
+
+
+<div class="position-relative" style="width:100%">
+    <table class="table align-middle table-hover" id="doi">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Employee ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Title</th>
+                <th scope="col">Department</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in employee %}
+            <tr>
+                <td>{{row.id|default_if_none:"&nbsp;"}}</td>
+                <td>
+                  <a href="{% url 'employee_detail' row.id %}" > {{row.employee_id}} </a>
+                </td>
+                <td>{{row.first_name|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.last_name|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.fk_position_id.title|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.fk_position_id.department|default_if_none:"&nbsp;"}}</td>
+                {% comment %} <td>{{row.gender|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.email_address|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.start_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
+                <td>{{row.end_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td> {% endcomment %}
+                <td>{{row.has_resigned|default_if_none:"&nbsp;"}}</td>
+                <td>                    
+                    <a class="btn btn-success col-12 btn-sm" href="{% url 'employee_edit' row.id %}"><button type="button" class="btn btn-success btn-block"><i class="bi bi-pencil"></i></button></a>
+                </td>
+                <td>
+                    <a class="btn btn-danger col-12 btn-sm" href="{% url 'employee_edit' row.id %}"><button type="button" class="btn btn-danger btn-block"><i class="bi bi-trash3"></i></button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+ 
+ <div class="mb-2">
+    <div class="d-flex flex-row">
+       {% comment %} <div class="p-2"><a class='btn btn-primary' href="{% url 'patients_export' %}" onclick="listCheckBoxes()"> Export CSV</a></div> {% endcomment %}
+       {% comment %} {% if perms.patients.add_patient %}
+       {% endif %} {% endcomment %}
+       <div class="p-2"><a class='btn btn-success' href="{% url 'employee_create' %}"> Add Employee </a></div>
+    </div>
+ </div>
+ 
+ <style>
+    div.fixed {
+       left: 200px;
+       position: fixed;
+       width: 50%;
+       bottom: 10px;
+     } 
+ 
+ </style>
+ 
+ <script>
+ 
+     function listCheckBoxes(){
+         var checkedBoxes = document.querySelectorAll('input[name=mycheckboxes]:checked');
+         console.log(checkedBoxes)
+     }
+ 
+ </script>
+{% endblock %}

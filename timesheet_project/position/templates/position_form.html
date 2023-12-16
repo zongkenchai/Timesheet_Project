@@ -2,10 +2,10 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-    {% if request.resolver_match.view_name == 'employee_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Employee
-    {% elif request.resolver_match.view_name == 'employee_create'%} 
-        <i class="bi bi-plus"></i> Add Employee
+    {% if request.resolver_match.view_name == 'position_edit' %}
+        <i class="bi bi-pen-fill"></i>  Edit Title
+    {% elif request.resolver_match.view_name == 'position_create'%} 
+        <i class="bi bi-plus"></i> Add Title
     {% endif %} 
 {% endblock %}
 
@@ -45,10 +45,10 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-auto">
-            <a class='btn btn-danger'href="{% url 'employee_list'%}">Go back</a>
+            <a class='btn btn-danger'href="{% url 'position_list'%}">Go back</a>
     
-            {% if request.resolver_match.view_name == 'employee_create'%} 
-            <input class="btn btn-success block" type="submit" value="Add Employee">
+            {% if request.resolver_match.view_name == 'position_create'%} 
+            <input class="btn btn-success block" type="submit" value="Add Title">
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 
