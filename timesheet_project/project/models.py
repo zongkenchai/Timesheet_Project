@@ -8,6 +8,7 @@ class Project(models.Model):
     start_date = models.DateField(default=timezone.now, blank=False)
     end_date = models.DateField(default=None, null=True, blank=True)
     expected_revenue = models.FloatField(null=False, blank=False)
+    # description = models.TextField(null=True, blank=True)
     
     def __str__(self):
         return f'{self.project_code} - {self.project_name}'
