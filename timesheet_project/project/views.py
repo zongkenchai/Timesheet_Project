@@ -35,7 +35,7 @@ class ProjectListView(ListView):
 
 
 class ProjectCreateView(CreateView):
-    template_name = 'position_form.html'
+    template_name = 'project_form.html'
     form_class = ProjectForm
     model = Project
     success_message = "Successfully Created Project"

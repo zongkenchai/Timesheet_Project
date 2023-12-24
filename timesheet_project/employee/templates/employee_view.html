@@ -77,7 +77,6 @@
                 <th scope="col">Department</th>
                 <th scope="col">Status</th>
                 <th scope="col"></th>
-                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -96,11 +95,22 @@
                 <td>{{row.start_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
                 <td>{{row.end_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td> {% endcomment %}
                 <td>{{row.has_resigned|default_if_none:"&nbsp;"}}</td>
-                <td>                    
-                    <a class="btn btn-success col-12 btn-sm" href="{% url 'employee_edit' row.id %}"><button type="button" class="btn btn-success btn-block"><i class="bi bi-pencil"></i></button></a>
-                </td>
                 <td>
-                    <a class="btn btn-danger col-12 btn-sm" href="{% url 'employee_edit' row.id %}"><button type="button" class="btn btn-danger btn-block"><i class="bi bi-trash3"></i></button></a>
+                  <a
+                    class="btn btn-success btn-block"
+                    href="{% url 'employee_edit' row.id %}"
+                    ><i class="bi bi-pencil"></i
+                  ></a>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-block"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                    onclick="delete_row(this)"
+                    href="{% url 'employee_delete' row.id %}"
+                  >
+                    <i class="bi bi-trash3"></i>
+                  </button>
                 </td>
             </tr>
             {% endfor %}
@@ -115,7 +125,32 @@
        <div class="p-2"><a class='btn btn-success' href="{% url 'employee_create' %}"> Add Employee </a></div>
     </div>
  </div>
- 
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+ <div class="modal-dialog">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" id="deleteModalLabel">Delete Employee</h5>
+       <button
+         type="button"
+         class="btn-close"
+         data-bs-dismiss="modal"
+         aria-label="Close"
+       ></button>
+     </div>
+     <div class="modal-body">
+       Are you sure you want to delete this employee?
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+         No
+       </button>
+       <a type="button" class="btn btn-primary" id="confirm_delete_button">Yes</a>
+     </div>
+   </div>
+ </div>
+</div>
+
  <style>
     div.fixed {
        left: 200px;
@@ -132,6 +167,9 @@
          var checkedBoxes = document.querySelectorAll('input[name=mycheckboxes]:checked');
          console.log(checkedBoxes)
      }
- 
+     function delete_row(selected_row) {
+      console.log(selected_row);
+      document.getElementById("confirm_delete_button").href = selected_row.getAttribute("href");
+    }
  </script>
 {% endblock %}

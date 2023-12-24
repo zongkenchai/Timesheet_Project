@@ -62,3 +62,10 @@ class PositionUpdateView(UpdateView):
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
+
+def delete_position(request, pk):
+    if request.method=="GET":
+        position = Position.objects.get(id=pk)
+        messages.error(request, f"Successfully deleted {position.title}")
+        position.delete()
+        return HttpResponseRedirect(reverse('position_list'))

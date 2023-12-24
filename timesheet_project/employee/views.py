@@ -70,3 +70,11 @@ class EmployeeDetailView(DetailView):
     model = Employee
     context_object_name = 'employee'
     fields = '__all__'
+    
+    
+def delete_employee(request, pk):
+    if request.method=="GET":
+        employee = Employee.objects.get(id=pk)
+        messages.error(request, f"Successfully deleted {employee.employee_id}")
+        employee.delete()
+        return HttpResponseRedirect(reverse('employee_list'))

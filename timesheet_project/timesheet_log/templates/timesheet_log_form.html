@@ -2,12 +2,13 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-    {% if request.resolver_match.view_name == 'project_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Project
-    {% elif request.resolver_match.view_name == 'project_create'%} 
-        <i class="bi bi-plus"></i> Add Project
+    {% if request.resolver_match.view_name == 'timesheet_log_edit' %}
+        <i class="bi bi-pen-fill"></i>  Edit Log
+    {% elif request.resolver_match.view_name == 'timesheet_log_create' %} 
+        <i class="bi bi-plus"></i> Add Log
     {% endif %} 
 {% endblock %}
+
 
 {% block content %}
 <form method="POST">
@@ -27,7 +28,7 @@
        </div>
     
        <div class="col-md-10 mb-4 pull-left">
-          {% if field.field.widget.input_type == "date" or field.html_name == "start_date"  or field.html_name == "end_date" %}
+          {% if field.field.widget.input_type == "date" or field.html_name == "date" %}
           {% render_field field class+="datepicker form-control" type="date" %}
           {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" %}
           {% render_field field class+="form-control" %}
@@ -44,10 +45,10 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-auto">
-            <a class='btn btn-danger'href="{% url 'project_list'%}">Go back</a>
+            <a class='btn btn-danger'href="{% url 'timesheet_log_list'%}">Go back</a>
     
-            {% if request.resolver_match.view_name == 'project_create'%} 
-            <input class="btn btn-success block" type="submit" value="Add Title">
+            {% if request.resolver_match.view_name == 'timesheet_log_create'%} 
+            <input class="btn btn-success block" type="submit" value="Add Log">
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 
