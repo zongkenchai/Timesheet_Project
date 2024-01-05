@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm, TextInput
 from .models import *
 
+    
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
@@ -13,5 +14,4 @@ class ProjectForm(ModelForm):
             "end_date" : "End Date",
             "expected_revenue" : "Expected Revenue",
             }
-        
 

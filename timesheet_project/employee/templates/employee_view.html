@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+{% comment %} <div class="d-grid gap-2 d-md-flex justify-content-md-end">
   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Advanced Search
   </button>
@@ -62,11 +62,11 @@
 
     </div>
   </div>
-</div> 
+</div>  {% endcomment %}
 
 
 <div class="position-relative" style="width:100%">
-    <table class="table align-middle table-hover" id="doi">
+    <table class="table align-middle table-hover data_table" id="doi">
         <thead class="table-dark">
             <tr>
                 <th scope="col">No.</th>

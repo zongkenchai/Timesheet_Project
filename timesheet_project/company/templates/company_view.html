@@ -11,25 +11,25 @@
         <thead class="table-dark">
           <tr>
             <th scope="col">No.</th>
-            <th scope="col">Employee</th>
-            <th scope="col">Project</th>
-            <th scope="col">Date</th>
-            <th scope="col">Duration</th>
+            <th scope="col">Company</th>
+            <th scope="col">PIC Name</th>
+            <th scope="col">PIC Contact</th>
+            <th scope="col">PIC Email</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
-          {% for row in timesheet_log %}
+          {% for row in company %}
           <tr>
             <td>{{row.id|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.fk_employee_id|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.fk_project_id|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
-            <td>{{row.duration|default_if_none:"&nbsp;"}}</td>
+            <td>{{row.company_name|default_if_none:"&nbsp;"}}</td>
+            <td>{{row.pic_name|default_if_none:"&nbsp;"}}</td>
+            <td>{{row.formatted_phone|default_if_none:"&nbsp;"}}</td>
+            <td>{{row.pic_email_address|default_if_none:"&nbsp;"}}</td>
             <td>
               <a
                 class="btn btn-success btn-block"
-                href="{% url 'timesheet_log_edit' row.id %}"
+                href="{% url 'company_edit' row.id %}"
                 ><i class="bi bi-pencil"></i
               ></a>
               <button
@@ -38,7 +38,7 @@
                 data-bs-toggle="modal"
                 data-bs-target="#deleteModal"
                 onclick="delete_row(this)"
-                href="{% url 'timesheet_log_delete' row.id %}"
+                href="{% url 'company_delete' row.id %}"
               >
                 <i class="bi bi-trash3"></i>
               </button>
@@ -51,7 +51,7 @@
       <div class="mb-2">
         <div class="d-flex flex-row">
           <div class="p-2">
-            <a class="btn btn-success" href="{% url 'timesheet_log_create' %}">
+            <a class="btn btn-success" href="{% url 'company_create' %}">
               Add Log
             </a>
           </div>

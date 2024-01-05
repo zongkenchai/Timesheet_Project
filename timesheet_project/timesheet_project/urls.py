@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('company/', include('company.urls')),
     path('employee/', include('employee.urls')),
     path('position/', include('position.urls')),
     path('project/', include('project.urls')),
     path('timesheet_log/', include('timesheet_log.urls')),
     path("admin/", admin.site.urls),
-    path("accounts/", include("django.contrib.auth.urls"))
+    path("accounts/", include("django.contrib.auth.urls")),
 ]

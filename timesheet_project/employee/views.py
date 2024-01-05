@@ -15,6 +15,8 @@ from django.contrib.auth.decorators import permission_required
 from .models import *
 from .forms import *
 from .filters import * 
+from timesheet_log.models import *
+
 #! Employee Main View
 #TODO : Add sorting, permissions
 class EmployeeListView(ListView):
@@ -70,6 +72,21 @@ class EmployeeDetailView(DetailView):
     model = Employee
     context_object_name = 'employee'
     fields = '__all__'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        employee = context["employee"]
+        context['employee'] = employee
+        ####################################################
+        try:
+            context['timesheet_log'] = TimesheetLog.objects.filter(fk_employee_id=employee.id)
+        except TimesheetLog.DoesNotExist:
+            context['timesheet_log'] = None
+        #####################################################
+        print(context)
+        return context
+    
     
     
 def delete_employee(request, pk):
