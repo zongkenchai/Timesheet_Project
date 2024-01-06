@@ -7,7 +7,7 @@ from project.models import *
 # Create your models here.
 
 class TimesheetLog(models.Model):
-    fk_employee_id = models.ForeignKey(Employee, on_delete=models.DO_NOTHING, default=None)
-    fk_project_id = models.ForeignKey(Project, on_delete=models.DO_NOTHING, default=None)
+    fk_employee_id = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
+    fk_project_id = models.ForeignKey(Project, on_delete=models.DO_NOTHING)
     date = models.DateField(default=timezone.now, null=False, blank=False)
     duration = models.DurationField(blank=False, null=False, default=datetime.timedelta)

@@ -16,10 +16,10 @@ from .forms import *
 
 #! Position Main View
 #TODO : Add sorting, permissions
-class PayrollListView(ListView):
-    template_name = 'payroll_view.html'
-    model = Payroll
-    context_object_name = 'payroll'
+class ProjectIncomeListView(ListView):
+    template_name = 'project_income_view.html'
+    model = ProjectIncome
+    context_object_name = 'project_income'
     
     # def get_queryset(self):
     #     queryset = super().get_queryset()
@@ -34,39 +34,39 @@ class PayrollListView(ListView):
     #     return context
 
 
-class PayrollCreateView(CreateView):
-    template_name = 'payroll_form.html'
-    form_class = PayrollForm
-    model = Payroll
+class ProjectIncomeCreateView(CreateView):
+    template_name = 'project_income_form.html'
+    form_class = ProjectIncomeForm
+    model = ProjectIncome
     success_message = "Successfully Created Logs"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('payroll_list') # kwargs = {'pk':self.object.id}
+        return reverse_lazy('project_income_list') # kwargs = {'pk':self.object.id}
 
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
-class PayrollUpdateView(UpdateView):
-    template_name = 'payroll_form.html'
-    form_class = PayrollForm
-    model = Payroll
+class ProjectIncomeUpdateView(UpdateView):
+    template_name = 'project_income_form.html'
+    form_class = ProjectIncomeForm
+    model = ProjectIncome
     success_message = "Successfully Updated Logs"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('payroll_list') # kwargs = {'pk':self.object.id}
+        return reverse_lazy('project_income_list') # kwargs = {'pk':self.object.id}
 
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
-def delete_payroll(request, pk):
+def delete_project_income(request, pk):
     if request.method=="GET":
-        payroll = Payroll.objects.get(id=pk)
-        messages.error(request, f"Successfully deleted Income - {payroll.id}")
-        payroll.delete()
-        return HttpResponseRedirect(reverse('payroll_list'))
+        project_income = ProjectIncome.objects.get(id=pk)
+        messages.error(request, f"Successfully deleted Income - {project_income.id}")
+        project_income.delete()
+        return HttpResponseRedirect(reverse('project_income_list'))
