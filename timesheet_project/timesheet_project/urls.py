@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('company/', include('company.urls')),
+    path('dashboard/', include('dashboard.urls')),
     path('employee/', include('employee.urls')),
     path('payroll/', include('payroll.urls')),
     path('position/', include('position.urls')),
@@ -27,4 +30,8 @@ urlpatterns = [
     path('timesheet_log/', include('timesheet_log.urls')),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
+    path('', include('customauth.urls')),
+    path('register-email/', include('user_registration.urls')),
+
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

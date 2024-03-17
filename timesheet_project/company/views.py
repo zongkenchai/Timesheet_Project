@@ -16,9 +16,10 @@ from .forms import *
 
 #! Position Main View
 #TODO : Add sorting, permissions
-class CompanyListView(ListView):
+class CompanyListView(PermissionRequiredMixin, ListView):
     template_name = 'company_view.html'
     model = Company
+    permission_required  = "company.view_company"
     context_object_name = 'company'
     
     # def get_queryset(self):
@@ -34,11 +35,12 @@ class CompanyListView(ListView):
     #     return context
 
 
-class CompanyCreateView(CreateView):
+class CompanyCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'company_form.html'
     form_class = CompanyForm
     model = Company
-    success_message = "Successfully Created Logs"
+    permission_required = 'company.add_company'
+    success_message = "Successfully Created Company"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
@@ -49,11 +51,12 @@ class CompanyCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CompanyUpdateView(UpdateView):
+class CompanyUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'company_form.html'
     form_class = CompanyForm
     model = Company
-    success_message = "Successfully Updated Logs"
+    permission_required = 'company.change_company'
+    success_message = "Successfully Updated Company"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
@@ -64,9 +67,10 @@ class CompanyUpdateView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+@permission_required('company.delete_company',raise_exception=True)
 def delete_company(request, pk):
     if request.method=="GET":
         company = Company.objects.get(id=pk)
-        messages.error(request, f"Successfully deleted Log - {company.id}")
+        messages.error(request, f"Successfully deleted Company - {company.id}")
         company.delete()
         return HttpResponseRedirect(reverse('company_list'))

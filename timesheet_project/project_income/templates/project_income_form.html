@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+{% load humanize %}
 
 {% block page_title %}
     {% if request.resolver_match.view_name == 'project_income_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Project Income
+        <i class="bi bi-pencil-square"></i>  Edit Project Income
     {% elif request.resolver_match.view_name == 'project_income_create' %} 
-        <i class="bi bi-plus"></i> Add Project Income
+        <i class="bi bi-plus-square"></i> Add Project Income
     {% endif %} 
 {% endblock %}
 
@@ -28,17 +29,20 @@
        </div>
     
        <div class="col-md-10 mb-4 pull-left">
-          {% if field.field.widget.input_type == "date" or field.html_name == "invoice_date" %}
-          {% render_field field class+="datepicker form-control" type="date" %}
-          {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" or field.field.widget.input_type == "number" %}
-          {% render_field field class+="form-control" %}
-          {% elif field.field.widget.input_type == "select" %}
-          {% render_field field class+="form-select" %}
-          {% elif field.field.widget.input_type == "checkbox" %}
-          {% render_field field class+="form-check" %}
-          {% else %}
-          {{field}}
-          {% endif %}
+        {% if field.field.widget.input_type == "date" or field.html_name == "invoice_date" %}
+            {% render_field field class+="datepicker form-control" type="date" %}
+        {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" %}
+            {% render_field field class+="form-control" %}
+        {% elif field.field.widget.input_type == "number" %}
+            {% render_field field class+="form-control" %}
+        {% elif field.field.widget.input_type == "select" %}
+            {% render_field field class+="form-select" %}
+        {% elif field.field.widget.input_type == "checkbox" %}
+            {% render_field field class+="form-check" %}
+        {% else %}
+            {{ field }}
+        {% endif %}
+        
        </div>
     </div>
     {% endfor %}

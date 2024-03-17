@@ -3,9 +3,9 @@
 
 {% block page_title %}
     {% if request.resolver_match.view_name == 'timesheet_log_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Log
+        <i class="bi bi-pencil-square"></i>  Edit Timesheet
     {% elif request.resolver_match.view_name == 'timesheet_log_create' %} 
-        <i class="bi bi-plus"></i> Add Log
+        <i class="bi bi-plus-square"></i> Add Timesheet
     {% endif %} 
 {% endblock %}
 
@@ -48,7 +48,7 @@
             <a class='btn btn-danger'href="{% url 'timesheet_log_list'%}">Go back</a>
     
             {% if request.resolver_match.view_name == 'timesheet_log_create'%} 
-            <input class="btn btn-success block" type="submit" value="Add Log">
+            <input class="btn btn-success block" type="submit" value="Add Timesheet">
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 

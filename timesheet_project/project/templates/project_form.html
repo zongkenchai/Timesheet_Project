@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+{% load humanize %}
 
 {% block page_title %}
     {% if request.resolver_match.view_name == 'project_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Project
+        <i class="bi bi-pencil-square"></i>  Edit Project
     {% elif request.resolver_match.view_name == 'project_create'%} 
-        <i class="bi bi-plus"></i> Add Project
+        <i class="bi bi-plus-square"></i> Add Project
     {% endif %} 
 {% endblock %}
 
@@ -29,7 +30,7 @@
        <div class="col-md-10 mb-4 pull-left">
           {% if field.field.widget.input_type == "date" or field.html_name == "start_date"  or field.html_name == "end_date" %}
           {% render_field field class+="datepicker form-control" type="date" %}
-          {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" %}
+          {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" or field.field.widget.input_type == "number"%}
           {% render_field field class+="form-control" %}
           {% elif field.field.widget.input_type == "select" %}
           {% render_field field class+="form-select" %}
@@ -47,7 +48,7 @@
             <a class='btn btn-danger'href="{% url 'project_list'%}">Go back</a>
     
             {% if request.resolver_match.view_name == 'project_create'%} 
-            <input class="btn btn-success block" type="submit" value="Add Title">
+            <input class="btn btn-success block" type="submit" value="Add Project">
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 

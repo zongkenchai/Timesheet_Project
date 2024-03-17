@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-<i class="bi bi-people"></i> Employee
+<i class="bi bi-person-badge"></i> Employee
 {% endblock %}
 
 {% block content %}
@@ -84,23 +84,27 @@
             <tr>
                 <td>{{row.id|default_if_none:"&nbsp;"}}</td>
                 <td>
-                  <a href="{% url 'employee_detail' row.id %}" > {{row.employee_id}} </a>
+                  <a href="{% url 'employee_detail' row.id %}" > {{row.staff_id}} </a>
                 </td>
-                <td>{{row.first_name|default_if_none:"&nbsp;"}}</td>
-                <td>{{row.last_name|default_if_none:"&nbsp;"}}</td>
-                <td>{{row.fk_position_id.title|default_if_none:"&nbsp;"}}</td>
-                <td>{{row.fk_position_id.department|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.employee_code|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.full_name|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.fk_position_id.position|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.fk_department_id.name|default_if_none:"&nbsp;"}}</td>
                 {% comment %} <td>{{row.gender|default_if_none:"&nbsp;"}}</td>
                 <td>{{row.email_address|default_if_none:"&nbsp;"}}</td>
                 <td>{{row.start_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
                 <td>{{row.end_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td> {% endcomment %}
                 <td>{{row.has_resigned|default_if_none:"&nbsp;"}}</td>
                 <td>
+                  {% if perms.employee.change_employee %}
                   <a
                     class="btn btn-success btn-block"
                     href="{% url 'employee_edit' row.id %}"
                     ><i class="bi bi-pencil"></i
                   ></a>
+                  {% endif %}
+
+                  {% if perms.employee.delete_employee %}
                   <button
                     type="button"
                     class="btn btn-danger btn-block"
@@ -111,6 +115,7 @@
                   >
                     <i class="bi bi-trash3"></i>
                   </button>
+                  {% endif%}
                 </td>
             </tr>
             {% endfor %}
@@ -122,7 +127,9 @@
        {% comment %} <div class="p-2"><a class='btn btn-primary' href="{% url 'patients_export' %}" onclick="listCheckBoxes()"> Export CSV</a></div> {% endcomment %}
        {% comment %} {% if perms.patients.add_patient %}
        {% endif %} {% endcomment %}
+       {% if perms.employee.add_employee %}
        <div class="p-2"><a class='btn btn-success' href="{% url 'employee_create' %}"> Add Employee </a></div>
+       {% endif %}
     </div>
  </div>
 

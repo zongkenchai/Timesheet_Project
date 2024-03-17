@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load static %} 
 {% load widget_tweaks %} 
+{% load humanize %}
+
 {% block page_title %} 
-  <i class="bi bi-people"></i> Project
+  <i class="bi bi-minecart"></i> Project
 {% endblock %}
 {% block content %}
 
@@ -13,9 +15,10 @@
         <th scope="col">No.</th>
         <th scope="col">Project Code</th>
         <th scope="col">Project Name</th>
+        <th scope="col">Customer Name</th>
         <th scope="col">Start Date</th>
         <th scope="col">End Date</th>
-        <th scope="col">Expected Revenue</th>
+        <th scope="col">Agreement Revenue</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -23,17 +26,25 @@
       {% for row in project %}
       <tr>
         <td>{{row.id|default_if_none:"&nbsp;"}}</td>
-        <td>{{row.project_code|default_if_none:"&nbsp;"}}</td>
-        <td>{{row.project_name|default_if_none:"&nbsp;"}}</td>
-        <td>{{row.start_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
-        <td>{{row.end_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
-        <td>{{row.expected_revenue|default_if_none:"&nbsp;"}}</td>
         <td>
+          <a href="{% url 'project_detail' row.id %}" >
+            {{row.project_code|default_if_none:"&nbsp;"}}
+          </a>
+        </td>
+        <td>{{row.project_name|default_if_none:"&nbsp;"}}</td>
+        <td>{{row.fk_company_id.company_name|default_if_none:"&nbsp;"}}</td>
+        <td>{{row.start_date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
+        <td>{{row.end_date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
+        <td>{{row.expected_revenue|default_if_none:"&nbsp;"|intcomma}}</td>
+        <td>
+          {% if perms.project.change_project %}
           <a
             class="btn btn-success btn-block"
             href="{% url 'project_edit' row.id %}"
             ><i class="bi bi-pencil"></i
           ></a>
+          {% endif %}
+          {% if perms.project.delete_project %}
           <button
             type="button"
             class="btn btn-danger btn-block"
@@ -44,6 +55,7 @@
           >
             <i class="bi bi-trash3"></i>
           </button>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
@@ -53,9 +65,11 @@
   <div class="mb-2">
     <div class="d-flex flex-row">
       <div class="p-2">
+        {% if perms.project.add_project %}
         <a class="btn btn-success" href="{% url 'project_create' %}">
           Add Project
         </a>
+        {% endif %}
       </div>
     </div>
   </div>

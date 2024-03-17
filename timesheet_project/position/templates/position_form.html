@@ -3,9 +3,9 @@
 
 {% block page_title %}
     {% if request.resolver_match.view_name == 'position_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Title
+        <i class="bi bi-pencil-square"></i>  Edit Position
     {% elif request.resolver_match.view_name == 'position_create'%} 
-        <i class="bi bi-plus"></i> Add Title
+        <i class="bi bi-plus-square"></i> Add Position
     {% endif %} 
 {% endblock %}
 
@@ -48,7 +48,7 @@
             <a class='btn btn-danger'href="{% url 'position_list'%}">Go back</a>
     
             {% if request.resolver_match.view_name == 'position_create'%} 
-            <input class="btn btn-success block" type="submit" value="Add Title">
+            <input class="btn btn-success block" type="submit" value="Add Position">
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 

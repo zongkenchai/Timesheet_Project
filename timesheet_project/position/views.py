@@ -16,9 +16,10 @@ from .forms import *
 
 #! Position Main View
 #TODO : Add sorting, permissions
-class PositionListView(ListView):
+class PositionListView(PermissionRequiredMixin, ListView):
     template_name = 'position_view.html'
     model = Position
+    permission_required = 'position.view_position'
     context_object_name = 'position'
     
     # def get_queryset(self):
@@ -30,15 +31,16 @@ class PositionListView(ListView):
     #     context = super(EmployeeListView, self).get_context_data(**kwargs)
     #     queryset = self.get_queryset()
     #     filter = EmployeeFilter(self.request.GET, queryset)
-    #     context["employee_filter"] = filter
+    #     context["position_filter"] = filter
     #     return context
 
 
-class PositionCreateView(CreateView):
+class PositionCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'position_form.html'
     form_class = PositionForm
     model = Position
-    success_message = "Successfully Created Employee"
+    permission_required = 'position.add_position'
+    success_message = "Successfully Created Position"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
@@ -49,10 +51,11 @@ class PositionCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class PositionUpdateView(UpdateView):
-    template_name = 'employee_form.html'
+class PositionUpdateView(PermissionRequiredMixin, UpdateView):
+    template_name = 'position_form.html'
     form_class = PositionForm
     model = Position
+    permission_required = 'position.chnage_position'
     success_message = "Successfully Updated Position"
     
     def get_success_url(self):
@@ -63,6 +66,7 @@ class PositionUpdateView(UpdateView):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
+@permission_required('position.delete_position', raise_exception=True)
 def delete_position(request, pk):
     if request.method=="GET":
         position = Position.objects.get(id=pk)

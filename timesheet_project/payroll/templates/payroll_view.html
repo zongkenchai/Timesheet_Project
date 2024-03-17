@@ -2,7 +2,9 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block page_title %} 
-<i class="bi bi-people"></i> Payroll 
+<i>                            
+  <span class="material-symbols-outlined">send_money</span>
+</i> Payroll 
 {% endblock %}
 
 {% block content %}
@@ -12,7 +14,7 @@
           <tr>
             <th scope="col">No.</th>
             <th scope="col">Employee</th>
-            <th scope="col">Payroll Date</th>
+            <th scope="col">Payroll Month</th>
             <th scope="col">Salary</th>
             <th scope="col"></th>
           </tr>
@@ -22,14 +24,18 @@
           <tr>
             <td>{{row.id|default_if_none:"&nbsp;"}}</td>
             <td>{{row.fk_employee_id|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
+            <td>{{row.date|default_if_none:"&nbsp;"|date:"Y-m"}}</td>
             <td>{{row.amount|default_if_none:"&nbsp;"}}</td>
             <td>
+              {% if perms.payroll.change_payroll %}
+
               <a
                 class="btn btn-success btn-block"
                 href="{% url 'payroll_edit' row.id %}"
                 ><i class="bi bi-pencil"></i
               ></a>
+              {% endif %}
+              {% if perms.payroll.delete_payroll %}
               <button
                 type="button"
                 class="btn btn-danger btn-block"
@@ -40,6 +46,7 @@
               >
                 <i class="bi bi-trash3"></i>
               </button>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -49,9 +56,18 @@
       <div class="mb-2">
         <div class="d-flex flex-row">
           <div class="p-2">
+            {% if perms.payroll.add_payroll %}
             <a class="btn btn-success" href="{% url 'payroll_create' %}">
               Add Payroll
             </a>
+            {% endif %}
+          </div>
+          <div class="p-2">
+            {% if perms.payroll_upload.add_payroll_upload %}
+            <a class="btn btn-primary" href="{% url 'payroll_upload' %}">
+              Upload Payroll
+            </a>
+            {% endif %}
           </div>
         </div>
       </div>

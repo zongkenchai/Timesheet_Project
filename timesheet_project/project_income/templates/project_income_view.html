@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %}
+{% load humanize %}
+
 {% block page_title %} 
-<i class="bi bi-people"></i> Project Income 
+<i>                            
+  <span class="material-symbols-outlined">point_of_sale</span>
+</i> Project Income 
 {% endblock %}
 
 {% block content %}
@@ -23,15 +27,18 @@
           <tr>
             <td>{{row.id|default_if_none:"&nbsp;"}}</td>
             <td>{{row.invoice_no|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.invoice_date|default_if_none:"&nbsp;"|date:"d/m/Y"}}</td>
+            <td>{{row.invoice_date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
             <td>{{row.fk_project_id|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.amount|default_if_none:"&nbsp;"}}</td>
+            <td>{{row.amount|default_if_none:"&nbsp;"|intcomma}}</td>
             <td>
+              {% if perms.project_income.change_project_income %}
               <a
                 class="btn btn-success btn-block"
                 href="{% url 'project_income_edit' row.id %}"
                 ><i class="bi bi-pencil"></i
               ></a>
+              {% endif %}
+              {% if perms.project_income.delete_project_income %}
               <button
                 type="button"
                 class="btn btn-danger btn-block"
@@ -42,6 +49,7 @@
               >
                 <i class="bi bi-trash3"></i>
               </button>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -51,9 +59,18 @@
       <div class="mb-2">
         <div class="d-flex flex-row">
           <div class="p-2">
+            {% if perms.project_income.add_project_income %}
             <a class="btn btn-success" href="{% url 'project_income_create' %}">
               Add Project Income
             </a>
+            {% endif %}
+          </div>
+          <div class="p-2">
+            {% if perms.project_income_upload.add_project_income_upload %}
+            <a class="btn btn-primary" href="{% url 'project_income_upload' %}">
+              Upload Project Income
+            </a>
+            {% endif %}
           </div>
         </div>
       </div>

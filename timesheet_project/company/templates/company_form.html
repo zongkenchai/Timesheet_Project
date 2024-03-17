@@ -3,9 +3,9 @@
 
 {% block page_title %}
     {% if request.resolver_match.view_name == 'company_edit' %}
-        <i class="bi bi-pen-fill"></i>  Edit Company
+        <i class="bi bi-pencil-square"></i>  Edit Company
     {% elif request.resolver_match.view_name == 'company_create' %} 
-        <i class="bi bi-plus"></i> Add Company
+        <i class="bi bi-plus-square"></i> Add Company
     {% endif %} 
 {% endblock %}
 

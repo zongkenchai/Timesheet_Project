@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-<i class="bi bi-people-fill"></i> Employee Detail
+<i class="bi bi-person-badge"></i> Employee Detail
 {% endblock %}
 
 {% block content %}
@@ -17,8 +17,10 @@
     <div class="media align-items-center py-3">
       <div class="media-body ml-4">
         <h4 class="font-weight-bold mb-0">{{employee.full_name}}<span class="text-muted font-weight-normal"></span></h4>
-        <div class="text-muted mb-2">ID: {{employee.id}}</div>
+        <div class="text-muted mb-2">ID: {{employee.staff_id}}</div>
+        {% if perms.employee.change_employee %}
         <a href='{% url "employee_edit" employee.id %}?next={{request.GET.next}}' class="btn btn-primary btn-sm">Edit</a>&nbsp;
+        {% endif %}
         <a href='{{request.META.HTTP_REFERER}}' class="btn btn-default btn-sm">Profile</a>&nbsp;
       </div>
     </div>
@@ -45,16 +47,12 @@
             <table class="table user-view-table m-0">
                 <tbody>
                 <tr>
-                  <td>First Name :</td>
-                  <td>{{employee.first_name}}</td>
+                  <td>Employee Code :</td>
+                  <td>{{employee.employee_code}}</td>
                 </tr>
                 <tr>
-                  <td>Last Name :</td>
-                  <td>{{employee.last_name}}</td>
-                </tr>
-                <tr>
-                  <td>Gender :</td>
-                  <td>{{employee.gender}}</td>
+                  <td>Full Name :</td>
+                  <td>{{employee.full_name}}</td>
                 </tr>
                 <tr>
                   <td>Email :</td>
@@ -69,19 +67,19 @@
               <tbody>
                 <tr>
                     <td>Title :</td>
-                    <td>{{employee.fk_position_id.title}}</td>
+                    <td>{{employee.fk_position_id.position}}</td>
                 </tr>
                 <tr>
                     <td>Department :</td>
-                    <td>{{employee.fk_position_id.department}}</td>
+                    <td>{{employee.fk_department_id.name}}</td>
                 </tr>
                 <tr>
                     <td>Date Joined :</td>
-                    <td>{{employee.start_date}}</td>
+                    <td>{{employee.start_date|date:"Y-m-d"}}</td>
                 </tr>
                 <tr>
                     <td>Date Left :</td>
-                    <td>{{employee.end_date}}</td>
+                    <td>{{employee.end_date|date:"Y-m-d"}}</td>
                 </tr>
                 <tr>
                     <td>Status :</td>
@@ -94,7 +92,65 @@
 
       </div>
       <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <h6 class="mt-4 mb-3">Timesheet</h6>
+        <div class="position-relative" style="width:100%">
+          <table class="table align-middle table-hover dtable_base">
+              <thead class="table-dark">
+                  <tr>
+                      <th scope="col">No.</th>
+                      <th scope="col">Employee Name</th>
+                      <th scope="col">Project Code</th>
+                      <th scope="col">Project Name</th>
+                      <th scope="col">Month</th>
+                      <th scope="col">Duration</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for row in employee_timesheet %}
+                  <tr>
+                      <td>{{row.id|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.fk_employee_id.full_name|default_if_none:"&nbsp;"}}</td>
+                      <td>
+                        <a href="{% url 'employee_detail' employee.id %}" >{{row.fk_project_id.project_code|default_if_none:"&nbsp;"}}</a>
+                      </td>
+                      <td>{{row.fk_project_id.project_name|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
+                      <td>{{row.duration|default_if_none:"&nbsp;"}}</td>
+                    </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        </div>
 
+        <h6 class="mt-4 mb-3">Timesheet Group By Month</h6>
+        <div class="position-relative" style="width:100%">
+          <table class="table align-middle table-hover dtable_base" >
+              <thead class="table-dark">
+                  <tr>
+                      <th scope="col">No.</th>
+                      <th scope="col">Employee Name</th>
+                      <th scope="col">Project Code</th>
+                      <th scope="col">Project Name</th>
+                      <th scope="col">Month</th>
+                      <th scope="col">Duration</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for row in employee_timesheet %}
+                  <tr>
+                      <td>{{row.id|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.fk_employee_id.full_name|default_if_none:"&nbsp;"}}</td>
+                      <td>
+                        <a href="{% url 'employee_detail' employee.id %}" >{{row.fk_project_id.project_code|default_if_none:"&nbsp;"}}</a>
+                      </td>
+                      <td>{{row.fk_project_id.project_name|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
+                      <td>{{row.duration|default_if_none:"&nbsp;"}}</td>
+                    </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        </div>
       </div>
       <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 
@@ -105,5 +161,15 @@
     
 </div>
 
+<script>
+  $('.dtable_base').DataTable(
+    {
+        "paging":true,
+        'searching':false,
+        "lengthChange": false
 
+    }
+)       
+</script>
 {% endblock %}
+

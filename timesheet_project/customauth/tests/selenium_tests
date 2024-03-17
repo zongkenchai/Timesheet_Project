@@ -1,0 +1,193 @@
+import email
+from lib2to3.pgen2 import driver
+import time
+from unittest import TestCase
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
+ 
+from django.test import LiveServerTestCase
+
+from customauth.models import MyUser, MyUserManager
+
+import os
+
+import pytest
+from django.contrib.auth import get_user_model
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+
+from django_functest import AdminLoginMixin, FuncBaseMixin
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
+from selenium.webdriver.support.ui import Select
+
+
+# Please add email: test@email.com and password: Password#1 before running the tests to superusers
+
+
+class Hosttest(StaticLiveServerTestCase):
+
+	def setUp(self):
+		port = 8000
+		# super().setUp()
+		# User = MyUser()
+		# self.user = MyUser.objects.create_superuser("example@email.com", "username", "Dev@20202")
+		self.selenium = webdriver.Chrome(executable_path='/home/divyanshu/Desktop/CITS3200/A-Web-based-Inventory-System-for-Biological-Samples/chromedriver')
+		# self.selenium.port = 8000
+		self.port = 8000
+		super(Hosttest, self).setUp()
+
+	def tearDown(self):
+		self.selenium.quit()
+		# MyUser.objects.all().delete()
+
+	def testhomepage(self):
+		driver = self.selenium
+		driver.get(self.live_server_url)
+		time.sleep(1)
+		assert "Biological Database" in driver.title
+
+	def test_login(self):
+
+		driver = self.selenium
+		# driver.get(self.live_server_url)
+		driver.get('http://localhost:8000')
+		time.sleep(1)
+
+
+		email = driver.find_element(By.ID, "email")
+
+		password = driver.find_element(By.ID, "password")
+
+		submit = driver.find_element(By.CLASS_NAME, "mt-2")
+
+		email.send_keys("test@email.com")
+		password.send_keys("Password#1")
+
+		submit.send_keys(Keys.RETURN)
+
+		# submit.submit()
+		time.sleep(1)
+
+		self.assertTrue('Home' in driver.page_source)
+
+	def test_login2(self):
+		driver = self.selenium
+
+		driver.get('http://localhost:8000')
+		email = driver.find_element(By.ID, "email")
+		password = driver.find_element(By.ID, "password")
+		submit = driver.find_element(By.CLASS_NAME, "mt-2")
+		email.send_keys("somerandomeemail@gmail.com")
+		password.send_keys("incorrectpasswordP1@")
+		submit.send_keys(Keys.RETURN)
+		time.sleep(1)
+		self.assertFalse('Home' in driver.page_source)
+
+	def test_login3(self):
+		driver = self.selenium
+
+		driver.get('http://localhost:8000')
+
+		email = driver.find_element(By.ID, "email")
+		password = driver.find_element(By.ID, "password")
+		submit = driver.find_element(By.CLASS_NAME, "mt-2")
+		email.send_keys("test@email.com")
+		password.send_keys("incorrectpasswordP1@")
+		submit.send_keys(Keys.RETURN)
+		time.sleep(2)
+		self.assertFalse('Home' in driver.page_source)
+
+	def test_accessibility(self):
+		driver = self.selenium
+		driver.get('http://localhost:8000/patients/patients-main')
+		time.sleep(1)
+		self.assertFalse('Patients' in driver.title)
+		self.assertTrue('Login' in driver.page_source)
+
+		driver.get('http://localhost:8000/sequencing/seq-main')
+		time.sleep(1)
+		self.assertFalse('Sequencing' in driver.title)
+		self.assertTrue('Login' in driver.page_source)
+
+		driver.get('http://localhost:8000/specimens/blood-samples')
+		time.sleep(1)
+		self.assertFalse('Blood Samples' in driver.title)
+		self.assertTrue('Login' in driver.page_source)
+
+		driver.get('http://localhost:8000/isolation/isolation-main')
+		time.sleep(1)
+		self.assertFalse('Isolation' in driver.title)
+		self.assertTrue('Login' in driver.page_source)
+
+	
+	def test_registration(self):
+		driver = self.selenium
+		# driver.get('http://localhost:8000')
+		# time.sleep(1)
+		driver.get('http://localhost:8000/register')
+		time.sleep(1)
+		self.assertTrue('Sign Up' in driver.page_source)
+		email = driver.find_element(By.ID, "email")
+		user = driver.find_element(By.ID, "username")
+		password = driver.find_element(By.ID, "password")
+		password2 = driver.find_element(By.ID, "password-repeat")
+		submit = driver.find_element(By.CLASS_NAME, "mt-2")
+		email.send_keys("test2@email.com")
+		user.send_keys("testuser2")
+		password.send_keys("Password#2")
+		password2.send_keys("Password#2")
+		submit.send_keys(Keys.RETURN)
+		time.sleep(1)
+
+		url = driver.current_url
+		self.assertTrue('http://localhost:8000/register/' in url)
+		self.assertEquals(url, 'http://localhost:8000/register/')
+
+
+	def test_patients_add(self):
+		driver = self.selenium
+		driver.get('http://localhost:8000')
+		time.sleep(1)
+		email = driver.find_element(By.ID, "email")
+		password = driver.find_element(By.ID, "password")
+		submit = driver.find_element(By.CLASS_NAME, "mt-2")
+		email.send_keys("test@email.com")
+		password.send_keys("Password#1")
+		submit.send_keys(Keys.RETURN)
+		time.sleep(1)
+		
+		driver.get('http://localhost:8000/patients/patients-main')
+
+		add_button = driver.find_element(By.CLASS_NAME, "btn-success")
+		add_button.send_keys(Keys.RETURN)
+
+		time.sleep(1)
+
+		patient_id = driver.find_element(By.NAME, "patient_id")
+		first_name = driver.find_element(By.NAME, "first_name")
+		last_name = driver.find_element(By.NAME, "last_name")
+		dob = driver.find_element(By.NAME, "dob")
+		gender = Select(driver.find_element(By.NAME, "gender"))
+		# add_pat = driver.find_element(By.CSS_SELECTOR, ".btn.btn-primary.")
+		patient_id.send_keys("123456")
+		first_name.send_keys("Test")
+		last_name.send_keys("Patient")
+		dob.send_keys("01/01/2000")
+		gender.select_by_value("M")
+		# add_pat.send_keys(Keys.RETURN)
+		url = driver.current_url
+		# self.assertEquals(url, 'http://localhost:8000/patients/patients-main')
+		self.assertTrue('http://localhost:8000/patients/patients-main' in url)
+
+		# patients_button = driver.find_element(By.LINK_TEXT, "/patients/patients-main")
+		# url = driver.current_url
+		# self.assertEquals(url, 'http://localhost:8000/patients/patients-main')
+	# 	    path('accounts/', include('django.contrib.auth.urls')), 
+    # path('specimens/', include('specimen.urls')),
+    # path('isolation/', include('isolation.urls')),
+    # path("sequencing/",include("sequencing.urls")),
+    # path("patients/",include("patients.urls")),

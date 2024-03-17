@@ -5,8 +5,8 @@ from position.models import *
 
 def Titles():
     options = []
-    for index,row in enumerate(Position.objects.values("title").distinct()):
-        option = (str(row["title"]),str(row["title"]))
+    for index,row in enumerate(Position.objects.values("position").distinct()):
+        option = (str(row["position"]),str(row["position"]))
         options.append(option)
     return sorted(tuple(options),key=lambda x:x[0])
 
@@ -20,9 +20,8 @@ def Departments():
    
 
 class EmployeeFilter(django_filters.FilterSet):
-    employee_id = django_filters.CharFilter(lookup_expr="icontains", label='Employee ID')
-    first_name = django_filters.CharFilter(lookup_expr="icontains", label='First Name')
-    last_name = django_filters.CharFilter(lookup_expr="icontains", label='Last Name')
+    employee_code = django_filters.CharFilter(lookup_expr="icontains", label='Employee ID')
+    full_name = django_filters.CharFilter(lookup_expr="icontains", label='Full Name')
     email_address = django_filters.CharFilter(lookup_expr="icontains", label='Email Address')
     HAS_RESIGNED_CHOICES = [
         ('active', 'Active'),
@@ -51,4 +50,4 @@ class EmployeeFilter(django_filters.FilterSet):
 
     class Meta:
         model = Employee
-        fields = ['employee_id', 'first_name', 'last_name', 'gender', 'email_address', 'has_resigned', 'title', 'department']
+        fields = ['employee_code', 'full_name', 'email_address', 'has_resigned', 'title', 'department']

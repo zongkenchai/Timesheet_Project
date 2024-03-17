@@ -10,8 +10,20 @@ class ProjectForm(ModelForm):
         labels = {
             "project_code" : "Project Code",
             "project_name" : "Project Name",
+            "fk_company_id" : 'Customer Name',
             "start_date" : "Start Date",
             "end_date" : "End Date",
-            "expected_revenue" : "Expected Revenue",
+            "expected_revenue" : "Aggreement Revenue",
             }
+        
 
+class ProjectPhaseForecastRevenueForm(ModelForm):
+
+    class Meta:
+        model = ProjectPhaseForecastRevenue
+        fields = '__all__'
+        labels = {
+            "fk_prokect_id" : "Project",
+            "year" : "Year",
+            "revenue_target" : 'Revenue Target',
+            }

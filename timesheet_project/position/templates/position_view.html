@@ -3,18 +3,17 @@
 {% load widget_tweaks %}
 
 {% block page_title %}
-<i class="bi bi-people"></i> Title
+<i class="bi bi-person-vcard"></i> Position
 {% endblock %}
 
 {% block content %}
 
 <div class="position-relative" style="width:100%">
-    <table class="table align-middle table-hover" id="doi">
+    <table class="table align-middle table-hover data_table" id="doi">
         <thead class="table-dark">
             <tr>
                 <th scope="col">No.</th>
-                <th scope="col">Title</th>
-                <th scope="col">Department</th>
+                <th scope="col">Position</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -22,13 +21,16 @@
             {% for row in position %}
             <tr>
                 <td>{{row.id|default_if_none:"&nbsp;"}}</td>
-                <td>{{row.title|default_if_none:"&nbsp;"}}</td>
-                <td>{{row.department|default_if_none:"&nbsp;"}}</td>
+                <td>{{row.position|default_if_none:"&nbsp;"}}</td>
                 <td>
+                    {% if perms.position.change_position %}
                     <a class="btn btn-success btn-block" href="{% url 'position_edit' row.id %}"><i class="bi bi-pencil"></i></a>
+                    {% endif %}
+                    {% if perms.position.delete_position %}
                     <button type="button" class="btn btn-danger btn-block" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="delete_row(this)" href="{% url 'position_delete' row.id %}">
                       <i class="bi bi-trash3"></i>
                     </button>
+                    {% endif %}
                   </td>
             </tr>
             {% endfor %}
@@ -40,9 +42,12 @@
        {% comment %} <div class="p-2"><a class='btn btn-primary' href="{% url 'patients_export' %}" onclick="listCheckBoxes()"> Export CSV</a></div> {% endcomment %}
        {% comment %} {% if perms.patients.add_patient %}
        {% endif %} {% endcomment %}
-       <div class="p-2"><a class='btn btn-success' href="{% url 'position_create' %}"> Add Title </a></div>
+       {% if perms.position.add_position %}
+       <div class="p-2"><a class='btn btn-success' href="{% url 'position_create' %}"> Add Position </a></div>
+       {% endif %}
     </div>
  </div>
+
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

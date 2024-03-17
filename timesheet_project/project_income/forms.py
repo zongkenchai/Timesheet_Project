@@ -22,3 +22,7 @@ class ProjectIncomeForm(ModelForm):
         
 
 
+class ProjectIncomeUploadForm(ModelForm):
+    class Meta:
+        model = ProjectIncomeUploadFile
+        fields = ['file']

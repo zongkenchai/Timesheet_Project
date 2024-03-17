@@ -2,7 +2,7 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block page_title %} 
-<i class="bi bi-people"></i> Timesheet Log 
+<i class="bi bi-building"></i> Company
 {% endblock %}
 
 {% block content %}
@@ -27,11 +27,11 @@
             <td>{{row.formatted_phone|default_if_none:"&nbsp;"}}</td>
             <td>{{row.pic_email_address|default_if_none:"&nbsp;"}}</td>
             <td>
-              <a
-                class="btn btn-success btn-block"
-                href="{% url 'company_edit' row.id %}"
-                ><i class="bi bi-pencil"></i
-              ></a>
+              {% if perms.company.change_company %}
+              <a class="btn btn-success btn-block" href="{% url 'company_edit' row.id %}" ><i class="bi bi-pencil"></i></a>
+              {% endif %}
+
+              {% if perms.company.delete_company %}
               <button
                 type="button"
                 class="btn btn-danger btn-block"
@@ -42,6 +42,7 @@
               >
                 <i class="bi bi-trash3"></i>
               </button>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -51,9 +52,11 @@
       <div class="mb-2">
         <div class="d-flex flex-row">
           <div class="p-2">
+            {% if perms.company.add_company %}
             <a class="btn btn-success" href="{% url 'company_create' %}">
               Add Company
             </a>
+            {% endif %}
           </div>
         </div>
       </div>

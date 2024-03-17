@@ -2,20 +2,13 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 import datetime
+from department.models import Department
+
 
 class Position(models.Model):
-    title = models.CharField(max_length=50, blank=False, null=False)
-    
-    DEPARTMENT = [
-        ('Technical', 'Technical'),
-        ('Finance', 'Finance'),
-        ('HR', 'HR'),
-        
-    ]
-    
-    department = models.CharField(max_length=10, choices=DEPARTMENT, default='Technical')
+    position = models.CharField(max_length=50, blank=False, null=False)
     
     def __str__(self):
-        return f'{self.title} ({self.department})'
-    
-    
+        return f'{self.position}'
+
+

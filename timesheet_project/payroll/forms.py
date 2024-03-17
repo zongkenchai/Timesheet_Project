@@ -15,9 +15,12 @@ class PayrollForm(ModelForm):
         fields = '__all__'
         labels = {
             "fk_employee_id" : "Employee",
-            "date" : "Payroll Date",
+            "date" : "Payroll Month",
             "amount" : "Salary",
             }
         
-
+class PayrollUploadForm(ModelForm):
+    class Meta:
+        model = PayrollUploadFile
+        fields = ['file']
 

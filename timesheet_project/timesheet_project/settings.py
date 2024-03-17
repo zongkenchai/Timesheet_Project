@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import configparser
+
+config = configparser.RawConfigParser()
+config.read(os.path.join(Path(__file__).resolve().parent, '.env'))
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
+SECRET_KEY = config.get('MAIN', 'SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,6 +37,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "company",
+    "dashboard",
+    "department",
     "employee",
     "payroll",
     "position",
@@ -45,7 +53,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "widget_tweaks",
     "django_filters",
-    "phonenumber_field"
+    "phonenumber_field",
+    'slick_reporting',
+    'crispy_forms',
+    'django.contrib.humanize',
+    'customauth',
+    'user_registration',
 ]
 
 MIDDLEWARE = [
@@ -83,13 +96,23 @@ WSGI_APPLICATION = "timesheet_project.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'timesheet_project',
+        'USER': 'django_admin',
+        'PASSWORD': 'test',
+        'HOST': 'localhost',
+        'PORT': '5433',
     }
 }
 
-
+PASSWORD_HASHERS = [ # new
+	'django.contrib.auth.hashers.Argon2PasswordHasher',
+	'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+	'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.ScryptPasswordHasher',
+]
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -132,3 +155,30 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+GOOGLE_AUTH_PATH = os.path.join(BASE_DIR, 'google_auth.json')
+GSHEET_ID = '1KsKPHn5ZEK4bYJYkIQ6SND_Y4Sgqe1qwwuEFH6ec9YY'
+
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = "/"  # new
+
+LOGIN_URL = 'login'
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+AUTH_USER_MODEL = 'customauth.MyUser'
+
+
+MAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST = 'smtp.gmail.com'  
+EMAIL_PORT = 587  
+EMAIL_FROM_USER = config.get('EMAIL', 'EMAIL_HOST_USER')
+EMAIL_HOST_USER = config.get('EMAIL', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config.get('EMAIL', 'EMAIL_HOST_PASSWORD')
