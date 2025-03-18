@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'customauth',
     'user_registration',
+    'custom_scripts'
 ]
 
 MIDDLEWARE = [
@@ -99,11 +100,11 @@ WSGI_APPLICATION = "timesheet_project.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'timesheet_project',
-        'USER': 'django_admin',
-        'PASSWORD': 'test',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'NAME': config.get('DATABASE', 'DB_NAME'),
+        'USER': config.get('DATABASE', 'DB_USER'),
+        'PASSWORD': config.get('DATABASE', 'DB_PASSWORD'),
+        'HOST': config.get('DATABASE', 'DB_HOST'),
+        'PORT': config.get('DATABASE', 'DB_PORT'),
     }
 }
 
