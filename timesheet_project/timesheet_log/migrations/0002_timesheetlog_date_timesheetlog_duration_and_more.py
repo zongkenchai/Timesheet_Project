@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="timesheetlog",
             name="duration",
-            field=models.DurationField(default=datetime.timedelta),
+            field= models.DecimalField(max_digits=100, decimal_places=2),
         ),
         migrations.AddField(
             model_name="timesheetlog",

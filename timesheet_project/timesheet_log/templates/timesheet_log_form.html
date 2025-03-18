@@ -32,6 +32,8 @@
           {% render_field field class+="datepicker form-control" type="date" %}
           {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" %}
           {% render_field field class+="form-control" %}
+          {% elif field.field.widget.input_type == "number" %}
+          {% render_field field class+="form-control" %}
           {% elif field.field.widget.input_type == "select" %}
           {% render_field field class+="form-select" %}
           {% elif field.field.widget.input_type == "checkbox" %}
@@ -52,7 +54,6 @@
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 
-    
     
         </div>
     </div>

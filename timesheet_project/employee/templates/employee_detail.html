@@ -17,11 +17,12 @@
     <div class="media align-items-center py-3">
       <div class="media-body ml-4">
         <h4 class="font-weight-bold mb-0">{{employee.full_name}}<span class="text-muted font-weight-normal"></span></h4>
-        <div class="text-muted mb-2">ID: {{employee.staff_id}}</div>
+        {% comment %} <div class="text-muted mb-0">Staff ID: {{employee.staff_id}}</div> {% endcomment %}
+        <div class="text-muted mb-2">ID: {{employee.employee_code}}</div>
         {% if perms.employee.change_employee %}
         <a href='{% url "employee_edit" employee.id %}?next={{request.GET.next}}' class="btn btn-primary btn-sm">Edit</a>&nbsp;
         {% endif %}
-        <a href='{{request.META.HTTP_REFERER}}' class="btn btn-default btn-sm">Profile</a>&nbsp;
+        <a href='{{request.META.HTTP_REFERER}}' class="btn btn-default btn-sm">Back</a>&nbsp;
       </div>
     </div>
 
@@ -30,11 +31,13 @@
         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Timesheet</button>
       </li>
+      {% if perms.employee.view_salaryrecord %}
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+        <button class="nav-link" id="salary-record-tab" data-bs-toggle="tab" data-bs-target="#salary-record" type="button" role="tab" aria-controls="contact" aria-selected="false">Salary Record</button>
       </li>
+      {% endif %}
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -122,7 +125,7 @@
           </table>
         </div>
 
-        <h6 class="mt-4 mb-3">Timesheet Group By Month</h6>
+        {% comment %} <h6 class="mt-4 mb-3">Timesheet Group By Month</h6>
         <div class="position-relative" style="width:100%">
           <table class="table align-middle table-hover dtable_base" >
               <thead class="table-dark">
@@ -150,10 +153,75 @@
                   {% endfor %}
               </tbody>
           </table>
-        </div>
+        </div> {% endcomment %}
       </div>
-      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+      <div class="tab-pane fade" id="salary-record" role="tabpanel" aria-labelledby="salary-record-tab">
+        <h6 class="mt-4 mb-3">Salary Record</h6>
 
+        <div class="position-relative" style="width:100%">
+          <table class="table align-middle table-hover dtable_base" id="timesheet">
+              <thead class="table-dark">
+                  <tr>
+                      <th scope="col">No.</th>
+                      <th scope="col">Employee</th>
+                      <th scope="col">Salary Review Date</th>
+                      <th scope="col">Salary</th>
+                      <th scope="col">Travel Allowance</th>
+                      <th scope="col">Insurance</th>
+                      <th scope="col">Annual Leaves</th>
+                      <th scope="col">Medical Leaves</th>
+                      <th scope="col"></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for row in salary_record %}
+                  <tr>
+                      <td>{{row.id|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.fk_employee_id|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.salary_review_date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
+                      <td>{{row.salary|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.travel_allowance|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.insurance|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.no_of_annual_leave|default_if_none:"&nbsp;"}}</td>
+                      <td>{{row.no_of_medical_leave|default_if_none:"&nbsp;"}}</td>
+                      <td>
+                        {% if perms.employee.change_salaryrecord %}
+                        <a
+                          class="btn btn-success btn-block"
+                          href="{% url 'salary_record_edit' pk=row.id employee_id=employee.id %}"
+                          ><i class="bi bi-pencil"></i
+                        ></a>
+                        {% endif %}
+                        {% if perms.employee.delete_salaryrecord %}
+                        <button
+                          type="button"
+                          class="btn btn-danger btn-block"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteModal"
+                          onclick="delete_row(this)"
+                          href="{% url 'salary_record_delete' pk=row.id employee_id=employee.id %}"
+                        >
+                          <i class="bi bi-trash3"></i>
+                        </button>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        </div>
+
+        <div class="mb-2">
+          <div class="d-flex flex-row">
+            <div class="p-2">
+              {% if perms.employee.add_salaryrecord %}
+              <a class="btn btn-success" href="{% url 'salary_record_create' employee_id=employee.id%}">
+                Add Salary Record
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

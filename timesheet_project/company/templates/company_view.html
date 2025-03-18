@@ -2,7 +2,7 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block page_title %} 
-<i class="bi bi-building"></i> Company
+<i class="bi bi-building"></i> Customer
 {% endblock %}
 
 {% block content %}
@@ -11,10 +11,9 @@
         <thead class="table-dark">
           <tr>
             <th scope="col">No.</th>
-            <th scope="col">Company</th>
-            <th scope="col">PIC Name</th>
-            <th scope="col">PIC Contact</th>
-            <th scope="col">PIC Email</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Email Address</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -23,9 +22,8 @@
           <tr>
             <td>{{row.id|default_if_none:"&nbsp;"}}</td>
             <td>{{row.company_name|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.pic_name|default_if_none:"&nbsp;"}}</td>
             <td>{{row.formatted_phone|default_if_none:"&nbsp;"}}</td>
-            <td>{{row.pic_email_address|default_if_none:"&nbsp;"}}</td>
+            <td>{{row.email_address|default_if_none:"&nbsp;"}}</td>
             <td>
               {% if perms.company.change_company %}
               <a class="btn btn-success btn-block" href="{% url 'company_edit' row.id %}" ><i class="bi bi-pencil"></i></a>
@@ -72,7 +70,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel">Delete Company</h5>
+              <h5 class="modal-title" id="deleteModalLabel">Delete Customer</h5>
               <button
                 type="button"
                 class="btn-close"
@@ -81,7 +79,7 @@
               ></button>
             </div>
             <div class="modal-body">
-              Are you sure you want to delete this company?
+              Are you sure you want to delete this customer?
             </div>
             <div class="modal-footer">
               <button

@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
+from .views import *
 
 urlpatterns = [
     path('company/', include('company.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('department/', include('department.urls')),
     path('employee/', include('employee.urls')),
     path('payroll/', include('payroll.urls')),
     path('position/', include('position.urls')),
@@ -31,7 +33,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path('', include('customauth.urls')),
-    path('register-email/', include('user_registration.urls')),
+    path('settings/actions/register-email/', include('user_registration.urls')),
+    path('settings/actions/manage', AdminManageRolesAccessView.as_view(), name='admin_manage'), 
+    path('settings/actions/manage/edit/<slug:pk>', AdminManageRolesAccessUpdateView.as_view(), name='admin_manage_edit'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

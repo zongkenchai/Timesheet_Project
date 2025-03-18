@@ -114,7 +114,9 @@ class EmployeeDetailView(PermissionRequiredMixin, DetailView):
         context['duration_by_month'] = duration_by_month
         context['duration_by_month_n_project'] =duration_by_month_n_project
         context['payroll_history'] = payroll_history
-            
+        
+        salary_record = SalaryRecord.objects.filter(fk_employee_id=employee.id)
+        context['salary_record'] = salary_record
         # print(context)
         #####################################################
 
@@ -156,7 +158,7 @@ class SalaryRecordCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'salary_record_form.html'
     form_class = SalaryRecordForm
     model = SalaryRecord
-    permission_required = 'employee.add_salary_record'
+    permission_required = 'employee.add_salaryrecord'
     success_message = "Successfully Created Salary Record"
     
     def get_context_data(self, **kwargs):
@@ -184,7 +186,7 @@ class SalaryRecordUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'salary_record_form.html'
     form_class = SalaryRecordForm
     model = SalaryRecord
-    permission_required = 'employee.change_salary_record'
+    permission_required = 'employee.change_salaryrecord'
     success_message = "Successfully Updated Salary Record"
     
     def get_context_data(self, **kwargs):
@@ -204,7 +206,7 @@ class SalaryRecordUpdateView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-@permission_required('project.delete_salary_record', raise_exception=True)
+@permission_required('project.delete_salaryrecord', raise_exception=True)
 def delete_salary_record(request, pk, employee_id):
     if request.method=="GET":
         salary_record = SalaryRecord.objects.get(id=pk)

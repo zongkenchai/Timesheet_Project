@@ -19,31 +19,30 @@ from .forms import *
 class TimesheetLogListView(PermissionRequiredMixin, ListView):
     template_name = 'timesheet_log_view.html'
     model = TimesheetLog
-    permission_required = 'timesheet_log.view_timesheet_log'
+    permission_required = 'timesheet_log.view_timesheetlog'
     context_object_name = 'timesheet_log'
     
     def get_queryset(self):
         queryset = super().get_queryset()
         
         # Check if the user is an admin
-        if self.request.user.is_superuser:
+        if self.request.user.is_staff or self.request.user.groups.filter(name='Manager').exists():
             # Admin can see all records
-            print('adminhahah')
-            request_user = self.request.user
-            correspondence_employee = Employee.objects.filter(fk_user_id=request_user.id).first()
-            return queryset.filter(fk_employee_id=correspondence_employee.id)
             return queryset
         else:
-            request_user = self.request.user
-            correspondence_employee = Employee.objects.filter(fk_user_id=request_user.id).first()
-            return queryset.filter(fk_employee_id=correspondence_employee.id)
+            try:
+                request_user = self.request.user
+                correspondence_employee = Employee.objects.filter(fk_user_id=request_user.id).first()
+                return queryset.filter(fk_employee_id=correspondence_employee.id)
+            except AttributeError:
+                return queryset
     
     def get_context_data(self, **kwargs):
         context = super(TimesheetLogListView, self).get_context_data(**kwargs)
         # request_user = self.request.user
         # correspondence_employee = Employee.objects.filter(fk_user_id=request_user.id).first()
         # context["timesheet_log"] = TimesheetLog.objects.filter(fk_employee_id=)
-        context['is_admin'] = self.request.user.is_superuser
+        context['is_admin'] = self.request.user.is_staff
 
         return context
 
@@ -52,7 +51,7 @@ class TimesheetLogCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'timesheet_log_form.html'
     form_class = TimesheetLogForm
     model = TimesheetLog
-    permission_required = 'timesheet_log.add_timesheet_log'
+    permission_required = 'timesheet_log.add_timesheetlog'
     success_message = "Successfully Created Logs"
     
     def get_success_url(self):
@@ -66,15 +65,19 @@ class TimesheetLogCreateView(PermissionRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_initial(self) -> dict[str, Any]:
-        request_user = self.request.user
-        correspondence_employee = Employee.objects.filter(fk_user_id=request_user.id).first()
-        return {'fk_employee_id' : correspondence_employee.id}
-    
+        try:
+            request_user = self.request.user
+            correspondence_employee = Employee.objects.filter(fk_user_id=request_user.id).first()
+            return {'fk_employee_id' : correspondence_employee.id}
+        except AttributeError:
+            return {}
+
+
 class TimesheetLogUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'timesheet_log_form.html'
     form_class = TimesheetLogForm
     model = TimesheetLog
-    permission_required = 'timesheet_log.change_timesheet_log'
+    permission_required = 'timesheet_log.change_timesheetlog'
     success_message = "Successfully Updated Logs"
     
     def get_success_url(self):
@@ -85,7 +88,7 @@ class TimesheetLogUpdateView(PermissionRequiredMixin, UpdateView):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
-@permission_required('timesheet_log.delete_timesheet_log', raise_exception=True)
+@permission_required('timesheet_log.delete_timesheetlog', raise_exception=True)
 def delete_timesheet_log(request, pk):
     if request.method=="GET":
         timesheet_log = TimesheetLog.objects.get(id=pk)

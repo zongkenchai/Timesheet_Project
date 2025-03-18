@@ -16,9 +16,10 @@
         <th scope="col">Project Code</th>
         <th scope="col">Project Name</th>
         <th scope="col">Customer Name</th>
+        <th scope="col">Project Manager</th>
         <th scope="col">Start Date</th>
         <th scope="col">End Date</th>
-        <th scope="col">Agreement Revenue</th>
+        <th scope="col">Project Fee</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -33,9 +34,10 @@
         </td>
         <td>{{row.project_name|default_if_none:"&nbsp;"}}</td>
         <td>{{row.fk_company_id.company_name|default_if_none:"&nbsp;"}}</td>
+        <td>{{row.fk_project_manager_id.employee_code|default_if_none:"&nbsp;"}}</td>
         <td>{{row.start_date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
         <td>{{row.end_date|default_if_none:"&nbsp;"|date:"Y-m-d"}}</td>
-        <td>{{row.expected_revenue|default_if_none:"&nbsp;"|intcomma}}</td>
+        <td>{{row.original_project_fee|default_if_none:"&nbsp;"|intcomma}}</td>
         <td>
           {% if perms.project.change_project %}
           <a

@@ -18,11 +18,11 @@ import pandas as pd
 from project.models import Project
 #! Position Main View
 #TODO : Add sorting, permissions
-class ProjectIncomeListView(PermissionRequiredMixin, ListView):
-    template_name = 'project_income_view.html'
-    model = ProjectIncome
-    permission_required = 'project_income.view_project_income'
-    context_object_name = 'project_income'
+class ProjectInvoiceListView(PermissionRequiredMixin, ListView):
+    template_name = 'project_invoice_view.html'
+    model = ProjectInvoice
+    permission_required = 'project_income.view_projectinvoice'
+    context_object_name = 'project_invoice'
     
     # def get_queryset(self):
     #     queryset = super().get_queryset()
@@ -37,53 +37,53 @@ class ProjectIncomeListView(PermissionRequiredMixin, ListView):
     #     return context
 
 
-class ProjectIncomeCreateView(PermissionRequiredMixin, CreateView):
-    template_name = 'project_income_form.html'
-    form_class = ProjectIncomeForm
-    model = ProjectIncome
-    permission_required = 'project_income.add_project_income'
-    success_message = "Successfully Created Income"
+class ProjectInvoiceCreateView(PermissionRequiredMixin, CreateView):
+    template_name = 'project_invoice_form.html'
+    form_class = ProjectInvoiceForm
+    model = ProjectInvoice
+    permission_required = 'project_income.add_projectinvoice'
+    success_message = "Successfully Created Invoice"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('project_income_list') # kwargs = {'pk':self.object.id}
+        return reverse_lazy('project_invoice_list') # kwargs = {'pk':self.object.id}
 
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ProjectIncomeUpdateView(PermissionRequiredMixin, UpdateView):
-    template_name = 'project_income_form.html'
-    form_class = ProjectIncomeForm
-    model = ProjectIncome
-    permission_required = 'project_income.change_project_income'
+class ProjectInvoiceUpdateView(PermissionRequiredMixin, UpdateView):
+    template_name = 'project_invoice_form.html'
+    form_class = ProjectInvoiceForm
+    model = ProjectInvoice
+    permission_required = 'project_income.change_projectinvoice'
     success_message = "Successfully Updated Income"
     
     def get_success_url(self):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('project_income_list') # kwargs = {'pk':self.object.id}
+        return reverse_lazy('project_invoice_list') # kwargs = {'pk':self.object.id}
 
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
-@permission_required('project_income.delete_project_income', raise_exception=True)
-def delete_project_income(request, pk):
+@permission_required('project_income.delete_projectinvoice', raise_exception=True)
+def delete_project_invoice(request, pk):
     if request.method=="GET":
-        project_income = ProjectIncome.objects.get(id=pk)
-        messages.error(request, f"Successfully deleted Income - {project_income.id}")
-        project_income.delete()
-        return HttpResponseRedirect(reverse('project_income_list'))
+        project_invoice = ProjectInvoice.objects.get(id=pk)
+        messages.error(request, f"Successfully deleted Invoice - {project_invoice.id}")
+        project_invoice.delete()
+        return HttpResponseRedirect(reverse('project_invoice_list'))
     
     
     
 
 #! Handling the file upload
-@permission_required('project_income_upload.add_project_income_upload')
+@permission_required('project_income_upload.add_projectinvoiceuploadfile')
 def upload_file(request):
     if request.method == 'POST':
-        form = ProjectIncomeUploadForm(request.POST, request.FILES)
+        form = ProjectInvoiceUploadForm(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save()
             print(instance)
@@ -94,7 +94,7 @@ def upload_file(request):
                 
             print(Project.objects.get(project_code='bsb-123'))
             list_to_create = [
-                ProjectIncome(
+                ProjectInvoice(
                     invoice_no = row['invoice_no'],
                     invoice_date = row['invoice_date'],
                     fk_project_id = Project.objects.get(project_code=row["project_code"]),
@@ -104,7 +104,7 @@ def upload_file(request):
                 ]
             print(list_to_create)
             try:
-                ProjectIncome.objects.bulk_create(
+                ProjectInvoice.objects.bulk_create(
                     list_to_create,
                     update_conflicts=True,
                     update_fields=['amount'],
@@ -113,12 +113,115 @@ def upload_file(request):
                 messages.success(request, f"Successfully uploaded file")
             except IntegrityError:
                 messages.warning(request, f"File uploaded contain duplicates values. Please check the file")
-            return HttpResponseRedirect(reverse('project_income_list'))
+            return HttpResponseRedirect(reverse('project_invoice_list'))
         
         else:
             context = {'form' : form}
-            return render(request, 'project_income_upload.html', context)
+            return render(request, 'project_invoice_upload.html', context)
         
-    context = context = {'form' : ProjectIncomeUploadForm()}
-    return render(request, 'project_income_upload.html', context)
+    context = context = {'form' : ProjectInvoiceUploadForm()}
+    return render(request, 'project_invoice_upload.html', context)
     
+
+
+class ProjectPaymentListView(PermissionRequiredMixin, ListView):
+    template_name = 'project_payment_view.html'
+    model = ProjectPayment
+    permission_required = 'project_income.view_projectpayment'
+    context_object_name = 'project_payment'
+    
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     filter = EmployeeFilter(self.request.GET, queryset)
+    #     return filter.qs
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super(EmployeeListView, self).get_context_data(**kwargs)
+    #     queryset = self.get_queryset()
+    #     filter = EmployeeFilter(self.request.GET, queryset)
+    #     context["employee_filter"] = filter
+    #     return context
+
+
+class ProjectPaymentCreateView(PermissionRequiredMixin, CreateView):
+    template_name = 'project_payment_form.html'
+    form_class = ProjectPaymentForm
+    model = ProjectPayment
+    permission_required = 'project_income.add_projectpayment'
+    success_message = "Successfully Created Payment"
+    
+    def get_success_url(self):
+        messages.success(self.request, self.success_message)
+        return reverse_lazy('project_payment_list') # kwargs = {'pk':self.object.id}
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class ProjectPaymentUpdateView(PermissionRequiredMixin, UpdateView):
+    template_name = 'project_payment_form.html'
+    form_class = ProjectPaymentForm
+    model = ProjectPayment
+    permission_required = 'project_income.change_projectpayment'
+    success_message = "Successfully Updated Payment"
+    
+    def get_success_url(self):
+        messages.success(self.request, self.success_message)
+        return reverse_lazy('project_payment_list') # kwargs = {'pk':self.object.id}
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+@permission_required('project_income.delete_projectpayment', raise_exception=True)
+def delete_project_payment(request, pk):
+    if request.method=="GET":
+        project_payment = ProjectPayment.objects.get(id=pk)
+        messages.error(request, f"Successfully deleted Payment - {project_payment.id}")
+        project_payment.delete()
+        return HttpResponseRedirect(reverse('project_payment_list'))
+
+
+
+#! Handling the file upload
+@permission_required('project_income_upload.add_projectpaymentuploadfile')
+def upload_file_project_payment(request):
+    if request.method == 'POST':
+        form = ProjectPaymentUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save()
+            print(instance)
+            if instance.file_extension == 'csv':
+                df = pd.read_csv(instance.file.path)
+            elif instance.file_extension == 'xlsx':
+                df = pd.read_excel(instance.file.path)
+                
+            list_to_create = [
+                ProjectPayment(
+                    fk_invoice_id = ProjectInvoice.objects.get(invoice_no=row["invoice_no"]),
+                    payment_no = row['payment_no'],
+                    payment_date = row['payment_date'],
+                    amount = row['amount']
+                )
+                for index, row in df.iterrows() if ProjectInvoice.objects.get(invoice_no=row["invoice_no"]).exists()
+                ]
+            print(list_to_create)
+            try:
+                ProjectPayment.objects.bulk_create(
+                    list_to_create,
+                    update_conflicts=True,
+                    update_fields=['amount'],
+                    unique_fields=['fk_invoice_no', 'payment_no']
+                )
+                messages.success(request, f"Successfully uploaded file")
+            except IntegrityError:
+                messages.warning(request, f"File uploaded contain duplicates values. Please check the file")
+            return HttpResponseRedirect(reverse('project_payment_list'))
+        
+        else:
+            context = {'form' : form}
+            return render(request, 'project_payment_upload.html', context)
+        
+    context = context = {'form' : ProjectPaymentUploadForm()}
+    return render(request, 'project_payment_upload.html', context)

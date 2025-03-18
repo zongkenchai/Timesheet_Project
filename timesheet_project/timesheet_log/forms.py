@@ -20,7 +20,7 @@ class TimesheetLogForm(ModelForm):
             "fk_employee_id" : "Employee ID",
             "fk_project_id" : "Project ID",
             "date" : "Date",
-            "duration" : "Duration (h:m:s)",
+            "duration" : "Duration (hours)",
             }
 
 

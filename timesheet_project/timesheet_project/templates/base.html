@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 
 <html lang="en">
 
@@ -63,26 +64,33 @@
                         </button>
                         <div class="collapse show" id="dashboard-collapse" style="">
                           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="/employee" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-person-badge"></i><span class="ms-1 d-none d-sm-inline">Employee</span></a></li>
-                            <li><a href="/position" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-person-vcard"></i><span class="ms-1 d-none d-sm-inline">Position</span></a></li>
+                            <li>
+                              <a href="/dashboard" class="btn btn-dark link-light rounded d-flex align-items-center">
+                                <i class="bi bi-clipboard-data"></i><span class="ms-1 d-none d-sm-inline">Dashboard</span></a></li>
                             <li><a href="/timesheet_log" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-calendar"></i><span class="ms-1 d-none d-sm-inline">Timesheet</span></a></li>
                           </ul>
                         </div>
                       </li>
+                      {% if request.user|user_in_group:'Manager' %}
                       <li class="nav-item">
                         <button class="btn btn-toggle align-items-center rounded text-light" data-bs-toggle="collapse" data-bs-target="#project-collapse" aria-expanded="true">
-                            Project
+                            Operations
                         </button>
                         <div class="collapse show" id="project-collapse" style="">
                           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><a href="/employee" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-person-badge"></i><span class="ms-1 d-none d-sm-inline">Employee</span></a></li>
+                            <li><a href="/position" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-person-vcard"></i><span class="ms-1 d-none d-sm-inline">Position</span></a></li>
+                            <li><a href="/department" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-diagram-3"></i><span class="ms-1 d-none d-sm-inline">Department</span></a></li>
                             <li><a href="/project" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-minecart"></i><span class="ms-1 d-none d-sm-inline">Project</span></a></li>
                             <li><a href="/company" class="btn btn-dark link-light rounded d-flex align-items-center"><i class="bi bi-building"></i><span class="ms-1 d-none d-sm-inline">Company</span></a></li>
                           </ul>
                         </div>
                       </li>
+                      {% endif %}
+                      {% if request.user.is_superuser %}
                       <li class="nav-item">
                         <button class="btn btn-toggle align-items-center rounded text-light" data-bs-toggle="collapse" data-bs-target="#others-collapse" aria-expanded="true">
-                            Others
+                            Finance
                         </button>
                         <div class="collapse show" id="others-collapse" style="">
                           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -92,29 +100,38 @@
                                 </i>
                                 <span class="ms-1 d-none d-sm-inline">Payroll</span></a>
                             </li>
-                            <li><a href="/project_income" class="btn btn-dark link-light rounded d-flex align-items-center">
+                            <li><a href="/project_income/invoice" class="btn btn-dark link-light rounded d-flex align-items-center">
                                 <i>                            
                                     <span class="material-symbols-outlined">point_of_sale</span>
                                 </i>
-                                <span class="ms-1 d-none d-sm-inline">Project Income</span></a>
+                                <span class="ms-1 d-none d-sm-inline">Project Invoice</span></a>
+                            </li>
+                            <li><a href="/project_income/payment" class="btn btn-dark link-light rounded d-flex align-items-center">
+                                <i>                            
+                                  <span class="material-symbols-outlined">payments</span>
+                                </i>
+                                <span class="ms-1 d-none d-sm-inline">Project Payment</span></a>
                             </li>
                           </ul>
                         </div>
-                      </li>                      
+                      </li>       
+                      <li><a href="/settings/actions/register-email/" class="btn btn-dark link-light rounded d-flex align-items-center">
+                        <i class="bi bi-envelope-check-fill"></i>
+                        <span class="ms-1 d-none d-sm-inline">Email Registration</span></a>
+                      </li>
+                      <li><a href="/settings/actions/manage" class="btn btn-dark link-light rounded d-flex align-items-center">
+                        <i class="bi bi-lock"></i>
+                        <span class="ms-1 d-none d-sm-inline">User Management</span></a>
+                      </li>
+                      {%endif%}        
                   </ul>
                   <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
                       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                          <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" class="rounded-circle">
-                          <span class="d-none d-sm-inline mx-1">Joe</span>
+                          <i class="bi bi-person rounded-circle" width="28" height="28"></i>
+                          <span class="d-none d-sm-inline mx-1">{{user}}</span>
                       </a>
                       <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                          <li><a class="dropdown-item text-white" href="#">New project...</a></li>
-                          <li><a class="dropdown-item text-white" href="#">Settings</a></li>
-                          <li><a class="dropdown-item text-white" href="#">Profile</a></li>
-                          <li>
-                              <hr class="dropdown-divider">
-                          </li>
-                          <li><a class="dropdown-item" href="#">Sign out</a></li>
+                          <li><a class="dropdown-item" href="/accounts/logout">Sign out</a></li>
                       </ul>
                   </div>
               </div>

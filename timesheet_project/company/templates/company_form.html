@@ -3,9 +3,9 @@
 
 {% block page_title %}
     {% if request.resolver_match.view_name == 'company_edit' %}
-        <i class="bi bi-pencil-square"></i>  Edit Company
+        <i class="bi bi-pencil-square"></i>  Edit Customer
     {% elif request.resolver_match.view_name == 'company_create' %} 
-        <i class="bi bi-plus-square"></i> Add Company
+        <i class="bi bi-plus-square"></i> Add Customer
     {% endif %} 
 {% endblock %}
 
@@ -48,7 +48,7 @@
             <a class='btn btn-danger'href="{% url 'company_list'%}">Go back</a>
     
             {% if request.resolver_match.view_name == 'company_create'%} 
-            <input class="btn btn-success block" type="submit" value="Add Company">
+            <input class="btn btn-success block" type="submit" value="Add Customer">
             {% else %}
             <input class="btn btn-primary block" type="submit" value="Save Changes">
             {% endif %} 
@@ -63,11 +63,11 @@
 
     $(document).ready(function() {
 
-        var existingContainer = document.getElementById('id_pic_contact_1').parentNode;
+        var existingContainer = document.getElementById('id_contact_1').parentNode;
 
-        var select = document.getElementById('id_pic_contact_0');
+        var select = document.getElementById('id_contact_0');
         var span = document.querySelector('.select2');
-        var input = document.getElementById('id_pic_contact_1');
+        var input = document.getElementById('id_contact_1');
         var newRow = document.createElement('div');
         newRow.className = 'row';
 
@@ -89,7 +89,7 @@
         existingContainer.appendChild(newRow);
     });
     
-    $('#id_pic_contact_0').addClass('form-select');
-    $('#id_pic_contact_1').addClass('form-control');
+    $('#id_contact_0').addClass('form-select');
+    $('#id_contact_1').addClass('form-control');
 </script>
 {% endblock %}

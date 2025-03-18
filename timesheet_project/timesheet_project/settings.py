@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "timesheet_project",
     "company",
     "dashboard",
     "department",

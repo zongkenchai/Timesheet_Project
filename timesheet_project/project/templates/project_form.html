@@ -30,7 +30,7 @@
        <div class="col-md-10 mb-4 pull-left">
           {% if field.field.widget.input_type == "date" or field.html_name == "start_date"  or field.html_name == "end_date" %}
           {% render_field field class+="datepicker form-control" type="date" %}
-          {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" or field.field.widget.input_type == "number"%}
+          {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" or field.field.widget.input_type == "number" or field.html_name == "notes"%}
           {% render_field field class+="form-control" %}
           {% elif field.field.widget.input_type == "select" %}
           {% render_field field class+="form-select" %}

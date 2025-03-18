@@ -15,13 +15,12 @@ class CompanyForm(ModelForm):
         model = Company
         fields = '__all__'
         labels = {
-            "company_name" : "Company Name",
-            "pic_name" : "PIC Name",
-            "pic_contact" : "PIC Contact",
-            "pic_email_address" : "PIC Email",
+            "company_name" : "Customer Name",
+            "contact" : "Contact",
+            "email_address" : "Email",
             }
         widgets = {
-            'pic_contact' : PhoneNumberPrefixWidget(initial="MY")
+            'contact' : PhoneNumberPrefixWidget(initial="MY")
         }
 
 

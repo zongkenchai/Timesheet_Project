@@ -9,12 +9,12 @@ from .models import *
 #     ]
 
 
-class ProjectIncomeForm(ModelForm):
+class ProjectInvoiceForm(ModelForm):
     class Meta:
-        model = ProjectIncome
+        model = ProjectInvoice
         fields = '__all__'
         labels = {
-            "invoice_no" : "Invoice No",
+            "invoice_no" : "Invoice No.",
             "invoice_date" : "Invoice Date",
             "fk_project_id" : "Project Code",
             "amount" : "Amount",
@@ -22,7 +22,25 @@ class ProjectIncomeForm(ModelForm):
         
 
 
-class ProjectIncomeUploadForm(ModelForm):
+class ProjectPaymentForm(ModelForm):
     class Meta:
-        model = ProjectIncomeUploadFile
+        model = ProjectPayment
+        fields = '__all__'
+        labels = {
+            "fk_invoice_id" : "Invoice No.",
+            "payment_no" : "Payment No.",
+            "payment_date" : "Payment Date",
+            "amount" : "Amount",
+            }
+        
+        
+class ProjectInvoiceUploadForm(ModelForm):
+    class Meta:
+        model = ProjectInvoiceUploadFile
+        fields = ['file']
+        
+
+class ProjectPaymentUploadForm(ModelForm):
+    class Meta:
+        model = ProjectPaymentUploadFile
         fields = ['file']

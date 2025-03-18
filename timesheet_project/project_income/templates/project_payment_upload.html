@@ -3,7 +3,7 @@
 {% load humanize %}
 
 {% block page_title %}
-    <i class="bi bi-file-earmark-plus"></i> Upload Project Income File
+    <i class="bi bi-file-earmark-plus"></i> Upload Project Payment File
 {% endblock %}
 
 
@@ -25,7 +25,7 @@
        </div>
     
        <div class="col-md-10 mb-4 pull-left">
-          {% if field.field.widget.input_type == "date" or field.html_name == "invoice_date" %}
+          {% if field.field.widget.input_type == "date" or field.html_name == "payment_date" %}
           {% render_field field class+="datepicker form-control" type="date" %}
           {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" or field.field.widget.input_type == "number" %}
           {% render_field field class+="form-control" %}
@@ -44,7 +44,7 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-auto">
-            <a class='btn btn-danger'href="{% url 'project_income_list'%}">Go back</a>
+            <a class='btn btn-danger'href="{% url 'project_payment_list'%}">Go back</a>
             <input class="btn btn-success block" type="submit" value="Upload">
     
         </div>

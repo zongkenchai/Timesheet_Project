@@ -78,7 +78,7 @@ class RegistrationView(ListView):
     template_name = "register_new_email.html"
     model =  RegisteredEmail
     context_object_name = 'register_email'
-    # permission_required  = 'is_staff'
+    permission_required  = 'is_staff'
     
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
@@ -88,8 +88,8 @@ class RegistrationView(ListView):
 class RegisterEmailUpdateView(UpdateView):
 
 	#This needs to edited
-    # permission_required  = 'is_staff'
-    template_name = 'register_email_edit.html'
+    permission_required  = 'is_staff'
+    template_name = 'register_email_form.html'
     model = RegisteredEmail
     fields = ["email_address", "name"]
 

@@ -9,13 +9,13 @@ class Employee(models.Model):
     staff_id = models.CharField(max_length=20, unique=True, blank=False)
     employee_code = models.CharField(max_length=20, unique=True, blank=False)
     full_name = models.CharField(max_length=50, blank=False)
-    fk_position_id = models.ForeignKey(Position, on_delete=models.CASCADE)
-    fk_department_id = models.ForeignKey(Department, on_delete=models.CASCADE)
+    fk_position_id = models.ForeignKey(Position, on_delete=models.DO_NOTHING)
+    fk_department_id = models.ForeignKey(Department, on_delete=models.DO_NOTHING)
 
     email_address = models.EmailField(unique=True, blank=True)
     start_date = models.DateField(default=timezone.now, blank=False)
     end_date = models.DateField(default=None, null=True, blank=True)
-    fk_user_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True)
+    fk_user_id = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, null=True, blank=True)
 
 
     
@@ -37,7 +37,7 @@ class Employee(models.Model):
     
     
 class SalaryRecord(models.Model):
-    fk_employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    fk_employee_id = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     salary_review_date = models.DateField(default=timezone.now)
     salary = models.DecimalField(max_digits=100, decimal_places=2)
     travel_allowance = models.DecimalField(max_digits=100, decimal_places=2)

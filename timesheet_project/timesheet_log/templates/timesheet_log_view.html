@@ -14,7 +14,7 @@
             <th scope="col">Employee</th>
             <th scope="col">Project</th>
             <th scope="col">Date</th>
-            <th scope="col">Duration</th>
+            <th scope="col">Duration (hours)</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -34,7 +34,7 @@
                 ><i class="bi bi-pencil"></i
               ></a>
               {% endif %}
-              {% if perms.timesheet_log.delete_timesheet_log %}
+              {% if perms.timesheet_log.delete_timesheetlog %}
               <button
                 type="button"
                 class="btn btn-danger btn-block"
@@ -55,7 +55,7 @@
       <div class="mb-2">
         <div class="d-flex flex-row">
           <div class="p-2">
-            {% if perms.timesheet_log.add_timesheet_log%}
+            {% if perms.timesheet_log.add_timesheetlog%}
             <a class="btn btn-success" href="{% url 'timesheet_log_create' %}">
               Add Log
             </a>
@@ -124,6 +124,5 @@
           document.getElementById("confirm_delete_button").href = selected_row.getAttribute("href");
         }
       </script>
-      {% endblock %}
     </div>
-    
+    {% endblock %}

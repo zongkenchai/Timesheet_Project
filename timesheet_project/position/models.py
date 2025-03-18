@@ -6,7 +6,7 @@ from department.models import Department
 
 
 class Position(models.Model):
-    position = models.CharField(max_length=50, blank=False, null=False)
+    position = models.CharField(max_length=50, blank=False, null=False, unique=True)
     
     def __str__(self):
         return f'{self.position}'

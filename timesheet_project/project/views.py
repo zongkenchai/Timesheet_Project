@@ -82,9 +82,10 @@ class ProjectDetailView(PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         print(context)
         project = context["project"]
-        context['project'] = project
+        project_phase = ProjectPhase.objects.filter(fk_project_id=project.id)
         ####################################################
         project_timesheet = TimesheetLog.objects.filter(fk_project_id=project.id)
+        
         data = {}
         if project_timesheet:
             duration_by_month = project_timesheet\
@@ -94,7 +95,7 @@ class ProjectDetailView(PermissionRequiredMixin, DetailView):
             
             duration_by_month_n_employee = project_timesheet\
                 .annotate(month=TruncMonth('date'))\
-                .values('month', 'fk_employee_id__employee_id')\
+                .values('month', 'fk_employee_id__employee_code')\
                 .annotate(duration=Sum('duration'))
                 
             total_duration = project_timesheet.aggregate(Sum('duration'))
@@ -106,25 +107,39 @@ class ProjectDetailView(PermissionRequiredMixin, DetailView):
             total_duration = 0
             total_employee_worked_on = 0
                 
-        project_income = ProjectIncome.objects.filter(fk_project_id=project.id)
-        if project_income:
-            amount_received = sum([i.amount for i in project_income])
-            outstanding_balance = project.expected_revenue - amount_received
-        else:
-            amount_received = 0
-            outstanding_balance = project.expected_revenue - amount_received
+                
+                
+                
+        project_invoice_df = ProjectInvoice.objects.filter(fk_project_id=project.id)
+        project_invoice_ids = [i.id for i in ProjectInvoice.objects.all().filter(fk_project_id=project.id)]
+        project_payment_df = ProjectPayment.objects.filter(fk_invoice_id__in=project_invoice_ids)
+        
 
-        project_revenue_target = ProjectForecastRevenue.objects.filter(fk_project_id=project.id)
+        total_invoice_amount = sum([i.amount for i in project_invoice_df])
+        total_payment_amount = sum([i.amount for i in project_payment_df])
+        total_outstanding_amount = total_invoice_amount - total_payment_amount
+        
+        project_phase_ids = [i.id for i in  ProjectPhase.objects.all().filter(fk_project_id=project.id)]
+        project_forecast_revenue = ProjectPhaseForecastRevenue.objects.filter(fk_project_phase_id__in=project_phase_ids)\
+            .annotate(month=TruncMonth('date'))\
+            .values('month')\
+            .annotate(amount=Sum('amount'))
 
+        print(project_forecast_revenue)
+
+        context['project'] = project
+        context['project_phase'] = project_phase
         context['project_timesheet'] = project_timesheet
         context['duration_by_month'] = duration_by_month
         context['duration_by_month_n_employee'] = duration_by_month_n_employee
-        context['invoice'] = project_income
-        context['amount_received'] = amount_received
-        context['outstanding_balance'] = outstanding_balance
+        context['invoice'] = project_invoice_df
+        context['payment'] = project_payment_df
+        context['total_invoice_amount'] = total_invoice_amount
+        context['total_payment_amount'] = total_payment_amount
+        context['total_outstanding_amount'] = total_outstanding_amount
         context['total_duration'] = total_duration
         context['total_employee_worked_on'] = total_employee_worked_on
-        context['project_revenue_target'] = project_revenue_target
+        context['project_revenue_target'] = project_forecast_revenue
             
         print(context)
         #####################################################
@@ -138,7 +153,7 @@ class ProjectPhaseCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'project_phase_form.html'
     form_class = ProjectPhaseForm
     model = ProjectPhase
-    permission_required = 'project.add_project_phase'
+    permission_required = 'project.add_projectphase'
     success_message = "Successfully Created Project Phase"
     
     def get_context_data(self, **kwargs):
@@ -151,7 +166,7 @@ class ProjectPhaseCreateView(PermissionRequiredMixin, CreateView):
 
     def get_success_url(self, **kwargs):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('project_detail', kwargs = {'pk':self.kwargs['project_id']}) 
+        return reverse_lazy('project_phase_detail', kwargs = {'pk':self.object.id}) 
 
     def form_valid(self, form):
         self.object = form.save()
@@ -167,7 +182,7 @@ class ProjectPhaseUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'project_phase_form.html'
     form_class = ProjectPhaseForm
     model = ProjectPhase
-    permission_required = 'project.change_project_phase'
+    permission_required = 'project.change_projectphase'
     success_message = "Successfully Updated Project Phase"
     
     def get_context_data(self, **kwargs):
@@ -180,13 +195,13 @@ class ProjectPhaseUpdateView(PermissionRequiredMixin, UpdateView):
     
     def get_success_url(self, **kwargs):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('project_detail', kwargs = {'pk':self.kwargs['project_id']}) # kwargs = {'pk':self.object.id}
+        return reverse_lazy('project_phase_detail', kwargs = {'pk':self.object.id}) # kwargs = {'pk':self.object.id}
 
     def form_valid(self, form):
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
-@permission_required('project.delete_project_phase', raise_exception=True)
+@permission_required('project.delete_projectphase', raise_exception=True)
 def delete_project_phase(request, pk, project_id):
     if request.method=="GET":
         project_phase = ProjectPhase.objects.get(id=pk)
@@ -199,14 +214,17 @@ class ProjectPhaseDetailView(PermissionRequiredMixin, DetailView):
     template_name = 'project_phase_detail.html'
     model = ProjectPhase
     context_object_name = 'project_phase'
-    permission_required = 'project.view_project_phase'
+    permission_required = 'project.view_projectphase'
     fields = '__all__'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print(context)
         project_phase = context["project_phase"]
+        project_phase_forecast_revenue = ProjectPhaseForecastRevenue.objects.filter(fk_project_phase_id=project_phase.id)
+        
         context['project_phase'] = project_phase
+        context['project_phase_forecast_revenue'] = project_phase_forecast_revenue
         return context
 
 
@@ -214,10 +232,10 @@ class ProjectPhaseDetailView(PermissionRequiredMixin, DetailView):
 
 
 class ProjectPhaseForecastRevenueCreateView(PermissionRequiredMixin, CreateView):
-    template_name = 'project_forecast_revenue_form.html'
+    template_name = 'project_phase_forecast_revenue_form.html'
     form_class = ProjectPhaseForecastRevenueForm
     model = ProjectPhaseForecastRevenue
-    permission_required = 'project.add_project_forecast_revenue'
+    permission_required = 'project.add_projectphaseforecastrevenue'
     success_message = "Successfully Created Forecast Revenue"
     
     def get_context_data(self, **kwargs):
@@ -238,15 +256,17 @@ class ProjectPhaseForecastRevenueCreateView(PermissionRequiredMixin, CreateView)
     
     def get_initial(self, *args, **kwargs):
         print(self)
-        phase: Project | None = ProjectPhase().objects.filter(id=self.kwargs['phase_id']).first()
-        return {'fk_phase_id' : phase.id}
+        print(self.kwargs['phase_id'])
+        phase = ProjectPhase.objects.filter(id=self.kwargs['phase_id']).first()
+        print(phase)
+        return {'fk_project_phase_id' : phase.id}
     
     
-class ProjectForecastRevenueUpdateView(PermissionRequiredMixin, UpdateView):
+class ProjectPhaseForecastRevenueUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'project_phase_forecast_revenue_form.html'
     form_class = ProjectPhaseForecastRevenueForm
     model = ProjectPhaseForecastRevenue
-    permission_required = 'project.change_project_phase_forecast_revenue'
+    permission_required = 'project.change_projectphaseforecastrevenue'
     success_message = "Successfully Updated Forecast Revenue"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -265,7 +285,7 @@ class ProjectForecastRevenueUpdateView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-@permission_required('project.delete_project_phase_forecast_revenue', raise_exception=True)
+@permission_required('project.delete_projectphaseforecastrevenue', raise_exception=True)
 def delete_project_phase_forecast_revenue(request, pk, phase_id):
     if request.method=="GET":
         project_phase_forecast_revenue = ProjectPhaseForecastRevenue.objects.get(id=pk)
