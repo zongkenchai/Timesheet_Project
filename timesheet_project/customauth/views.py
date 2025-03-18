@@ -78,6 +78,7 @@ def register_request(request):
 			# messages.success(request, "Registration successful." )
 
 			send_activation_email(user, request)
+			from django.contrib import messages
 
 			messages.success(request, "Please check your inbox and click on the activation link to activate your account!")
 			user.save()
@@ -178,23 +179,19 @@ def homepage(request):
 
 
 def activate_user(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = MyUser._default_manager.get(email=uid)
+    except (TypeError, ValueError, OverflowError, MyUser.DoesNotExist):
+        user = None
 
-	try:
+    if user and generate_token.check_token(user, token):
+        user.is_email_verified = True
+        user.is_active = True
+        user.save()
 
-		uid = urlsafe_base64_decode(uidb64).decode()
-		user = MyUser._default_manager.get(email=uid)
+        messages.success(request, "Email verified, you can now login")  # ✅ Use Django's messaging
 
-	except Exception as e:
-		user = None
-
-	if user and generate_token.check_token(user, token):
-		user.is_email_verified = True
-		user.is_active = True
-		user.save()
-
-		message.add_message(request, message.SUCCESS, 'Email verified, you can now login')
-
-		return redirect(reverse('homepage'))
-
-	else:	
-		return render(request, 'registration/activation-failed.html', {'user': user})
+        return redirect(reverse("homepage"))  # ✅ Redirect to homepage after success
+    else:
+        return render(request, "registration/activation-failed.html", {"user": user})
