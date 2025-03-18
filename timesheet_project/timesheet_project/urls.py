@@ -16,10 +16,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls.static import static
+from django.conf import settings
+from .views import *
 
 urlpatterns = [
+    path('company/', include('company.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('department/', include('department.urls')),
     path('employee/', include('employee.urls')),
+    path('payroll/', include('payroll.urls')),
     path('position/', include('position.urls')),
+    path('project/', include('project.urls')),
+    path('project_income/', include('project_income.urls')),
+    path('timesheet_log/', include('timesheet_log.urls')),
     path("admin/", admin.site.urls),
-    path("accounts/", include("django.contrib.auth.urls"))
+    path("accounts/", include("django.contrib.auth.urls")),
+    path('', include('customauth.urls')),
+    path('settings/actions/register-email/', include('user_registration.urls')),
+    path('settings/actions/manage', AdminManageRolesAccessView.as_view(), name='admin_manage'), 
+    path('settings/actions/manage/edit/<slug:pk>', AdminManageRolesAccessUpdateView.as_view(), name='admin_manage_edit'),
+
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

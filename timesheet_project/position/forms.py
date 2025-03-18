@@ -8,7 +8,6 @@ class PositionForm(ModelForm):
         fields = '__all__'
         labels = {
             "title" : "Title",
-            "department" : "Department",
             }
         
 

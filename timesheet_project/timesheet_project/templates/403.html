@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}
+<i class="bi bi-hospital"></i></i> 403 Forbidden
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex container-fluid align-items-center justify-content-center px-4 mb-5 text" >
+    <div class="m-auto p-5 position:relative text-center">
+      
+      <img class="bi" width="500"  height="500" src={% static "error/401-error.svg" %}>
+      <p class="h1">ERROR: 403 FORBIDDEN </p>
+      <hr class="border border-color:grey border-2 opacity-50 width:100">
+      <p class="h5">Sorry, you do not have access to view this page.</p>
+      <p class="h5 mb-5">Please go back to the homepage.</p>
+  
+      <a href="/">
+        <button type="button" class="faq-box" >
+            <div class="justify-content-center text-center text">
+                <span class="position-relative" style="margin:0px">Back to Home<span>
+            </div>
+        </button>
+      </a>
+  
+    </div>
+</div>
+
+{% endblock %}

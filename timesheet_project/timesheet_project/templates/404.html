@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}
+<i class="bi bi-hospital"></i></i> 404 Not Found
+{% endblock %}
+
+{% block content%}
+<div class="d-flex container-fluid align-items-center justify-content-center px-4 mb-5 text" >
+    <div class="m-auto p-5 position:relative text-center">
+      
+      <img class="bi" width="500"  height="500" src={% static "error/404-error.svg" %}>
+      <p class="h1">ERROR: 404 NOT FOUND </p>
+      <hr class="border border-color:grey border-2 opacity-50 width:100">
+      <p class="h5"> 
+        {%if  exception == "Resolver404" %}
+        We're sorry, the page you requested could not be found
+        {% else %}
+        {{ exception }}
+        {% endif %}</p>
+      <p class="h5 mb-5">Please go back to the homepage</p>
+  
+      <a href="/">
+        <button type="button" class="faq-box" >
+            Back to Home
+        </button>
+      </a>
+
+    </div>
+  </div>
+
+
+{% endblock %}

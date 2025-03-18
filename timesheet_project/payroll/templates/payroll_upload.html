@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block page_title %}
+    <i class="bi bi-file-earmark-plus"></i> Upload Payroll
+{% endblock %}
+
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="row">
+       <div class="col-md-2">
+          {{ field.label_tag }}
+          {% if field.help_text %}
+          <sup>{{ field.help_text }}</sup>
+          {% endif %}
+          {% for error in field.errors %}
+          <div class="row">
+             <div class="alert alert-danger">{{error}}</div>
+          </div>
+          {% endfor %}
+       </div>
+    
+       <div class="col-md-10 mb-4 pull-left">
+          {% if field.field.widget.input_type == "date" or field.html_name == "invoice_date" %}
+          {% render_field field class+="datepicker form-control" type="date" %}
+          {% elif field.field.widget.input_type == "text" or field.field.widget.input_type == "email" or field.field.widget.input_type == "number" %}
+          {% render_field field class+="form-control" %}
+          {% elif field.field.widget.input_type == "select" %}
+          {% render_field field class+="form-select" %}
+          {% elif field.field.widget.input_type == "checkbox" %}
+          {% render_field field class+="form-check" %}
+          {% elif field.field.widget.input_type == "file" %}
+          {% render_field field class+="form-control" type="file" %}
+          {% else %}
+          {{field}}
+          {% endif %}
+       </div>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-auto">
+            <a class='btn btn-danger'href="{% url 'project_income_list'%}">Go back</a>
+            <input class="btn btn-success block" type="submit" value="Upload">
+    
+        </div>
+    </div>
+ </form>
+
+
+{% endblock %}

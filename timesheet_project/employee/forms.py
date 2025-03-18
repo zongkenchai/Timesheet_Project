@@ -7,14 +7,31 @@ class EmployeeForm(ModelForm):
         model = Employee
         fields = '__all__'
         labels = {
-            "employee_id" : "Employee ID",
-            "first_name" : "First Name",
-            "last_name" : "Last Name",
-            "fk_position_id" : "Title",
-            "gender" : "Gender",
+            "staff_id" : "Staff ID",
+            "employee_code" : 'Employee Code',
+            "full_name" : "Full Name",
+            "fk_position_id" : "Position",
+            "fk_department_id" : "Department",
             "email_address" : "Email Address",
             "start_date" : "Date Joined",
             "end_date" : "Date Left",
+            'fk_user_id' : 'Username',
+            'no_of_annual_leave' : 'Annual Leave',
+            'no_of_medical_leave' : 'Medical Leave',
             }
         
 
+
+class SalaryRecordForm(ModelForm):
+    class Meta:
+        model = SalaryRecord
+        fields = '__all__'
+        labels = {
+            "fk_employee_id" : "Staff ID",
+            "salary_review_date" : 'Salary Review Date',
+            "salary" : "Salary",
+            "travel_allowance" : "Travel Allowance",
+            "insurance" : "Insurance",
+            'no_of_annual_leave' : 'Annual Leave',
+            'no_of_medical_leave' : 'Medical Leave',
+            }
